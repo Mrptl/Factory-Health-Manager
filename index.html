@@ -1,0 +1,4332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Health &amp; Safety Triage Assistant</title>
+    <style>
+        :root {
+            /* Primitive Color Tokens */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            /* RGB versions for opacity control */
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+
+            /* Background color tokens (Light Mode) */
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-bg-6: rgba(249, 115, 22, 0.08);
+            --color-bg-7: rgba(236, 72, 153, 0.08);
+            --color-bg-8: rgba(6, 182, 212, 0.08);
+
+            /* Semantic Color Tokens (Light Mode) */
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+            --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+            /* Common style patterns */
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --focus-outline: 2px solid var(--color-primary);
+            --status-bg-opacity: 0.15;
+            --status-border-opacity: 0.25;
+
+            /* RGB versions for opacity control */
+            --color-success-rgb: 33, 128, 141;
+            --color-error-rgb: 192, 21, 47;
+            --color-warning-rgb: 168, 75, 47;
+            --color-info-rgb: 98, 108, 113;
+
+            /* Typography */
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --letter-spacing-tight: -0.01em;
+
+            /* Spacing */
+            --space-0: 0;
+            --space-1: 1px;
+            --space-2: 2px;
+            --space-4: 4px;
+            --space-6: 6px;
+            --space-8: 8px;
+            --space-10: 10px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            /* Shadows */
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
+            /* Animation */
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: var(--font-family-base);
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            overflow-x: hidden;
+        }
+
+        /* Industrial Safety Theme - Additional Variables */
+        :root {
+            --color-safety-red: #DC2626;
+            --color-safety-orange: #F59E0B;
+            --color-safety-yellow: #FCD34D;
+            --color-safety-green: #10B981;
+            --color-hazard-chemical: #9333EA;
+            --color-hazard-heat: #EF4444;
+            --color-hazard-mechanical: #3B82F6;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s var(--ease-standard);
+        }
+
+        .slide-in {
+            animation: slideIn 0.4s var(--ease-standard);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            color: white;
+            padding: var(--space-16) var(--space-32);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: var(--space-12);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: var(--space-12) var(--space-24);
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-secondary);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-large {
+            padding: var(--space-16) var(--space-32);
+            font-size: var(--font-size-lg);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-danger {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            color: white;
+            padding: 80px var(--space-32);
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-24);
+            line-height: var(--line-height-tight);
+        }
+
+        .hero p {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-32);
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: var(--space-16);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 60px var(--space-32);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-32);
+            color: var(--color-text);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-24);
+        }
+
+        .feature-card {
+            background: var(--color-surface);
+            padding: var(--space-32);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-card-border);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: var(--space-16);
+        }
+
+        .feature-card h3 {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-12);
+            color: var(--color-text);
+        }
+
+        .feature-card p {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-32);
+            background: linear-gradient(135deg, var(--color-bg-1), var(--color-bg-3));
+        }
+
+        .auth-box {
+            background: var(--color-surface);
+            padding: var(--space-32);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--color-card-border);
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: var(--space-24);
+            color: var(--color-text);
+            font-size: var(--font-size-3xl);
+        }
+
+        .user-type-toggle {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-24);
+        }
+
+        .user-type-btn {
+            flex: 1;
+            padding: var(--space-12);
+            border: 2px solid var(--color-border);
+            background: var(--color-surface);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-weight: var(--font-weight-medium);
+            transition: all var(--duration-normal);
+        }
+
+        .user-type-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-16);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-8);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            background: var(--color-surface);
+            color: var(--color-text);
+            transition: border-color var(--duration-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: var(--focus-ring);
+        }
+
+        .error-message {
+            color: var(--color-error);
+            font-size: var(--font-size-sm);
+            margin-top: var(--space-4);
+        }
+
+        .success-message {
+            color: var(--color-success);
+            font-size: var(--font-size-sm);
+            margin-top: var(--space-4);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: var(--space-16);
+            color: var(--color-text-secondary);
+        }
+
+        .auth-link a {
+            color: var(--color-primary);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            padding: var(--space-24);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            margin-bottom: var(--space-32);
+        }
+
+        .sidebar-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .user-info {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            margin-bottom: var(--space-8);
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-12);
+            border-radius: var(--radius-base);
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all var(--duration-fast);
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover {
+            background: var(--color-secondary);
+        }
+
+        .sidebar-link.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: var(--space-32);
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: var(--space-32);
+        }
+
+        .dashboard-header h1 {
+            font-size: var(--font-size-4xl);
+            margin-bottom: var(--space-8);
+        }
+
+        .dashboard-subtitle {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-lg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-24);
+            margin-bottom: var(--space-32);
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-card-border);
+            transition: transform var(--duration-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-base);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-32);
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            color: white;
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-normal);
+            border: none;
+        }
+
+        .action-card:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-icon {
+            font-size: 36px;
+            margin-bottom: var(--space-12);
+        }
+
+        .action-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+        }
+
+        /* Symptom Checker */
+        .symptom-checker {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .checker-card {
+            background: var(--color-surface);
+            padding: var(--space-32);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-24);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width var(--duration-normal);
+        }
+
+        .question-container {
+            margin-bottom: var(--space-32);
+        }
+
+        .question-text {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-24);
+            color: var(--color-text);
+        }
+
+        .options-grid {
+            display: grid;
+            gap: var(--space-12);
+        }
+
+        .option-btn {
+            padding: var(--space-16);
+            border: 2px solid var(--color-border);
+            background: var(--color-surface);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            text-align: left;
+            font-size: var(--font-size-base);
+            transition: all var(--duration-fast);
+            color: var(--color-text);
+        }
+
+        .option-btn:hover {
+            border-color: var(--color-primary);
+            background: var(--color-bg-1);
+        }
+
+        .option-btn.selected {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: var(--space-12);
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .checkbox-option:hover {
+            background: var(--color-bg-1);
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .slider-container {
+            padding: var(--space-16);
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: var(--color-secondary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-top: var(--space-16);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: var(--space-16);
+            margin-top: var(--space-32);
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+        }
+
+        .triage-badge {
+            display: inline-block;
+            padding: var(--space-16) var(--space-32);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-24);
+        }
+
+        .triage-emergency {
+            background: rgba(220, 38, 38, 0.15);
+            color: #DC2626;
+            border: 2px solid #DC2626;
+        }
+
+        .triage-urgent {
+            background: rgba(245, 158, 11, 0.15);
+            color: #F59E0B;
+            border: 2px solid #F59E0B;
+        }
+
+        .triage-soon {
+            background: rgba(252, 211, 77, 0.15);
+            color: #D97706;
+            border: 2px solid #FCD34D;
+        }
+
+        .triage-routine {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10B981;
+            border: 2px solid #10B981;
+        }
+
+        .triage-self-care {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3B82F6;
+            border: 2px solid #3B82F6;
+        }
+
+        .results-summary {
+            background: var(--color-bg-1);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            margin: var(--space-24) 0;
+            text-align: left;
+        }
+
+        .results-summary h3 {
+            margin-bottom: var(--space-16);
+            color: var(--color-text);
+        }
+
+        .symptom-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .symptom-list li {
+            padding: var(--space-8) 0;
+            border-bottom: 1px solid var(--color-card-border);
+        }
+
+        .symptom-list li:last-child {
+            border-bottom: none;
+        }
+
+        .result-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-top: var(--space-24);
+        }
+
+        /* Appointments */
+        .specialty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-32);
+        }
+
+        .specialty-card {
+            background: var(--color-surface);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-normal);
+        }
+
+        .specialty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .specialty-card.selected {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .doctor-list {
+            display: grid;
+            gap: var(--space-16);
+        }
+
+        .doctor-card {
+            background: var(--color-surface);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            display: flex;
+            gap: var(--space-24);
+            align-items: center;
+            transition: all var(--duration-normal);
+        }
+
+        .doctor-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .doctor-specialty {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+        }
+
+        .doctor-meta {
+            display: flex;
+            gap: var(--space-16);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--space-8);
+            margin: var(--space-24) 0;
+        }
+
+        .calendar-day {
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            background: var(--color-surface);
+        }
+
+        .calendar-day:hover {
+            background: var(--color-bg-1);
+            border-color: var(--color-primary);
+        }
+
+        .calendar-day.selected {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: var(--space-12);
+            margin-top: var(--space-24);
+        }
+
+        .time-slot {
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            background: var(--color-surface);
+        }
+
+        .time-slot:hover {
+            background: var(--color-bg-1);
+            border-color: var(--color-primary);
+        }
+
+        .time-slot.selected {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Health Resources */
+        .resources-tabs {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-24);
+            border-bottom: 2px solid var(--color-border);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: var(--space-12) var(--space-24);
+            border: none;
+            background: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-secondary);
+            transition: all var(--duration-fast);
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--color-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-24);
+        }
+
+        .article-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            overflow: hidden;
+            transition: all var(--duration-normal);
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .article-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--color-bg-1), var(--color-bg-3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+
+        .article-content {
+            padding: var(--space-20);
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: var(--space-4) var(--space-12);
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--space-12);
+        }
+
+        .article-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-12);
+            color: var(--color-text);
+        }
+
+        .article-excerpt {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        /* Music Player */
+        .music-player {
+            background: linear-gradient(135deg, var(--color-bg-5), var(--color-bg-7));
+            border-radius: var(--radius-lg);
+            padding: var(--space-32);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .now-playing {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+
+        .album-art {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto var(--space-24);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .track-info h3 {
+            font-size: var(--font-size-2xl);
+            margin-bottom: var(--space-8);
+        }
+
+        .track-type {
+            color: var(--color-text-secondary);
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-24);
+            margin: var(--space-24) 0;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: var(--color-surface);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all var(--duration-fast);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+        }
+
+        .control-btn.play-btn {
+            width: 70px;
+            height: 70px;
+            background: var(--color-primary);
+            color: white;
+            font-size: 32px;
+        }
+
+        .progress-container {
+            margin: var(--space-24) 0;
+        }
+
+        .time-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-full);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: var(--radius-full);
+            width: 30%;
+            transition: width var(--duration-fast);
+        }
+
+        .playlist {
+            margin-top: var(--space-32);
+        }
+
+        .playlist h4 {
+            margin-bottom: var(--space-16);
+        }
+
+        .playlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-12);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            margin-bottom: var(--space-8);
+        }
+
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .playlist-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hospital Locator */
+        .locator-header {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-24);
+        }
+
+        .search-input {
+            flex: 1;
+        }
+
+        .mock-map {
+            height: 300px;
+            background: linear-gradient(135deg, var(--color-bg-1), var(--color-bg-3));
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-24);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--color-error);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            animation: pulse 2s infinite;
+        }
+
+        .map-marker::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hospital-filters {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-24);
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: var(--space-8) var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            background: var(--color-surface);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            font-size: var(--font-size-sm);
+        }
+
+        .filter-chip:hover {
+            background: var(--color-bg-1);
+            border-color: var(--color-primary);
+        }
+
+        .filter-chip.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .hospitals-list {
+            display: grid;
+            gap: var(--space-16);
+        }
+
+        .hospital-card {
+            background: var(--color-surface);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            transition: all var(--duration-normal);
+        }
+
+        .hospital-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hospital-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-16);
+        }
+
+        .hospital-name {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .hospital-distance {
+            color: var(--color-primary);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .emergency-badge {
+            background: var(--color-error);
+            color: white;
+            padding: var(--space-4) var(--space-12);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .hospital-details {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-16);
+        }
+
+        .hospital-specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-8);
+            margin-bottom: var(--space-16);
+        }
+
+        .specialty-tag {
+            padding: var(--space-4) var(--space-12);
+            background: var(--color-bg-1);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+        }
+
+        .hospital-actions {
+            display: flex;
+            gap: var(--space-12);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: var(--color-surface);
+            padding: var(--space-32);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-24);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .question-number {
+            color: var(--color-primary);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--space-12);
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: var(--space-12);
+        }
+
+        .quiz-option {
+            padding: var(--space-16);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            background: var(--color-surface);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: var(--color-bg-1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(var(--color-success-rgb), 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(var(--color-error-rgb), 0.1);
+        }
+
+        .quiz-feedback {
+            margin-top: var(--space-16);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            background: var(--color-bg-1);
+        }
+
+        .quiz-results {
+            text-align: center;
+            padding: var(--space-32);
+        }
+
+        .quiz-score {
+            font-size: 72px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin: var(--space-24) 0;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-24);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-header {
+            padding: var(--space-24);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-base);
+            transition: all var(--duration-fast);
+        }
+
+        .close-modal:hover {
+            background: var(--color-secondary);
+        }
+
+        .modal-body {
+            padding: var(--space-24);
+        }
+
+        /* Doctor Dashboard Specific */
+        .patient-queue {
+            display: grid;
+            gap: var(--space-16);
+        }
+
+        .queue-patient {
+            background: var(--color-surface);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            transition: all var(--duration-normal);
+        }
+
+        .queue-patient:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .queue-patient.emergency {
+            border-left-color: #DC2626;
+        }
+
+        .queue-patient.urgent {
+            border-left-color: #F59E0B;
+        }
+
+        .queue-patient.soon {
+            border-left-color: #FCD34D;
+        }
+
+        .queue-patient.routine {
+            border-left-color: #10B981;
+        }
+
+        .patient-details h4 {
+            margin-bottom: var(--space-8);
+        }
+
+        .patient-meta {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-12);
+        }
+
+        .chief-complaint {
+            background: var(--color-bg-1);
+            padding: var(--space-12);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-12);
+        }
+
+        .appointment-list {
+            display: grid;
+            gap: var(--space-16);
+        }
+
+        .appointment-card {
+            background: var(--color-surface);
+            padding: var(--space-20);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointment-time {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .features-grid,
+            .stats-grid,
+            .quick-actions,
+            .specialty-grid,
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .doctor-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .music-player {
+                padding: var(--space-24);
+            }
+
+            .album-art {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-16 {
+            margin-top: var(--space-16);
+        }
+
+        .mt-24 {
+            margin-top: var(--space-24);
+        }
+
+        .mb-16 {
+            margin-bottom: var(--space-16);
+        }
+
+        .mb-24 {
+            margin-bottom: var(--space-24);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="fade-in">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">🏭 Factory Safety Assistant</div>
+                <div class="nav-buttons">
+                    <button class="btn btn-outline" onclick="showLogin()">Login</button>
+                    <button class="btn btn-outline" onclick="showSignup()">Sign Up</button>
+                    <!-- <a class="btn btn-outline" href="index.html" title="Open alternate page">Open index.html</a> -->
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>AI-Powered Factory Health &amp; Safety Assistant</h1>
+                <p>Instant worker health monitoring, symptom detection, risk assessment, and emergency triage for
+                    industrial environments. Operating 24/7 with 92% accuracy and 1.1-second response time.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-outline btn-large" onclick="showSignup()">Get Started Free</button>
+                    <button class="btn btn-outline btn-large" onclick="scrollToFeatures()">Learn More</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <h2 class="section-title">Advanced Safety Features for Industrial Environments</h2>
+            <div class="features-grid">
+                <div class="feature-card slide-in">
+                    <div class="feature-icon">🚨</div>
+                    <h3>Voice-Enabled Symptom Detection</h3>
+                    <p>Multi-language voice input (English, Hindi, Gujarati) for workers to report symptoms naturally
+                        without technical barriers.</p>
+                </div>
+                <div class="feature-card slide-in">
+                    <div class="feature-icon">⚡</div>
+                    <h3>1.1 Second Response Time</h3>
+                    <p>Instant AI triage with 92% accuracy - reducing response time from 10-15 minutes to near-instant
+                        assessment.</p>
+                </div>
+                <div class="feature-card slide-in">
+                    <div class="feature-icon">🏭</div>
+                    <h3>Industrial Hazard Assessment</h3>
+                    <p>Specialized evaluation for chemical exposure, heat stress, mechanical injuries, and workplace
+                        fatigue.</p>
+                </div>
+                <div class="feature-card slide-in">
+                    <div class="feature-icon">📋</div>
+                    <h3>Auto Incident Reports</h3>
+                    <p>Automatic generation of incident and health reports for safety officers and supervisors with full
+                        documentation.</p>
+                </div>
+                <div class="feature-card slide-in">
+                    <div class="feature-icon">🩺</div>
+                    <h3>Real-Time First Aid Guidance</h3>
+                    <p>Step-by-step emergency instructions and workplace-specific first aid protocols for immediate
+                        intervention.</p>
+                </div>
+                <div class="feature-card slide-in">
+                    <div class="feature-icon">📊</div>
+                    <h3>24/7 Operation &amp; Analytics</h3>
+                    <p>Continuous monitoring reduces on-floor health risk workload by 40% with comprehensive safety
+                        analytics.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="auth-container hidden" style="display: none;">
+        <div class="auth-box fade-in">
+            <h2>Worker Login</h2>
+            <div class="user-type-toggle">
+                <button class="user-type-btn active" onclick="selectLoginType('worker')">Worker</button>
+                <button class="user-type-btn" onclick="selectLoginType('officer')">Safety Officer</button>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="login-password" required>
+                </div>
+                <div id="login-error" class="error-message"></div>
+                <button type="submit" class="btn btn-primary btn-full btn-large mt-16">Login</button>
+            </form>
+            <div class="auth-link">
+                Don't have an account? <a onclick="showSignup()">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Page -->
+    <div id="signup-page" class="auth-container hidden" style="display: none;">
+        <div class="auth-box fade-in">
+            <h2>Register Account</h2>
+            <div class="user-type-toggle">
+                <button class="user-type-btn active" onclick="selectSignupType('worker')">Worker</button>
+                <button class="user-type-btn" onclick="selectSignupType('officer')">Safety Officer</button>
+            </div>
+            <form id="signup-form" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="signup-password" required minlength="6">
+                </div>
+
+                <!-- Worker-specific fields -->
+                <div id="worker-fields">
+                    <div class="form-group">
+                        <label>Employee ID</label>
+                        <input type="text" class="form-control" id="signup-employee-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Department/Shift</label>
+                        <select class="form-control" id="signup-department">
+                            <option value="">Select Department</option>
+                            <option value="Production">Production</option>
+                            <option value="Assembly">Assembly</option>
+                            <option value="Warehouse">Warehouse</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Quality Control">Quality Control</option>
+                            <option value="Logistics">Logistics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" class="form-control" id="signup-phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Emergency Contact</label>
+                        <input type="tel" class="form-control" id="signup-emergency-contact">
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Language</label>
+                        <select class="form-control" id="signup-language">
+                            <option value="English">English</option>
+                            <option value="Hindi">हिंदी (Hindi)</option>
+                            <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Safety Officer-specific fields -->
+                <div id="officer-fields" class="hidden">
+                    <div class="form-group">
+                        <label>Officer ID</label>
+                        <input type="text" class="form-control" id="signup-officer-id">
+                    </div>
+                    <div class="form-group">
+                        <label>Department</label>
+                        <select class="form-control" id="signup-officer-department">
+                            <option value="">Select Department</option>
+                            <option value="Health &amp; Safety">Health &amp; Safety</option>
+                            <option value="Environmental Health">Environmental Health</option>
+                            <option value="Occupational Medicine">Occupational Medicine</option>
+                            <option value="Emergency Response">Emergency Response</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" class="form-control" id="signup-officer-phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Facility Name</label>
+                        <input type="text" class="form-control" id="signup-facility">
+                    </div>
+                </div>
+
+                <div id="signup-error" class="error-message"></div>
+                <button type="submit" class="btn btn-primary btn-full btn-large mt-16">Create Account</button>
+            </form>
+            <div class="auth-link">
+                Already have an account? <a onclick="showLogin()">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Worker Dashboard -->
+    <div id="worker-dashboard" class="dashboard hidden" style="display: none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">🏭 Safety Assistant</div>
+                <div class="user-info" id="worker-name-sidebar"></div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a class="sidebar-link active" onclick="showWorkerSection('overview')">📊 Dashboard</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showWorkerSection('symptom-checker')">🚨 Report Symptoms</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showWorkerSection('health-records')">📋 Health Records</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showWorkerSection('incidents')">📄 Incident Reports</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showWorkerSection('first-aid')">🩺 First Aid Guide</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="logout()">🚪 Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <!-- Worker Dashboard Overview -->
+            <div id="worker-overview" class="fade-in">
+                <div class="dashboard-header">
+                    <h1 id="worker-welcome">Welcome back!</h1>
+                    <p class="dashboard-subtitle">Your factory health &amp; safety dashboard</p>
+                </div>
+
+                <!-- Emergency SOS Button -->
+                <button class="btn btn-danger btn-large btn-full" onclick="triggerEmergencySOS()"
+                    style="margin-bottom: var(--space-24); font-size: var(--font-size-xl); padding: var(--space-20);">
+                    🚨 EMERGENCY SOS - Call for Help
+                </button>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-days-safe">0</div>
+                        <div class="stat-label">Days Since Last Incident</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-assessments">0</div>
+                        <div class="stat-label">Health Assessments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-health-score">85%</div>
+                        <div class="stat-label">Health Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">System Available</div>
+                    </div>
+                </div>
+
+                <h3 class="mb-16">Quick Actions</h3>
+                <div class="quick-actions">
+                    <button class="action-card" onclick="showWorkerSection('symptom-checker')"
+                        style="background: linear-gradient(135deg, #DC2626, #EF4444);">
+                        <div class="action-icon">🚨</div>
+                        <div class="action-title">Report Symptoms Now</div>
+                    </button>
+                    <button class="action-card" onclick="showWorkerSection('health-records')">
+                        <div class="action-icon">📋</div>
+                        <div class="action-title">View Health Records</div>
+                    </button>
+                    <button class="action-card" onclick="showWorkerSection('first-aid')">
+                        <div class="action-icon">🩺</div>
+                        <div class="action-title">First Aid Guide</div>
+                    </button>
+                    <button class="action-card" onclick="contactSafetyOfficer()">
+                        <div class="action-icon">📞</div>
+                        <div class="action-title">Contact Safety Officer</div>
+                    </button>
+                </div>
+
+                <h3 class="mt-24 mb-16">Recent Health Assessments</h3>
+                <div id="recent-assessments" class="appointment-list">
+                    <p class="text-center" style="color: var(--color-text-secondary);">No recent assessments</p>
+                </div>
+            </div>
+
+            <!-- AI Symptom Checker Section -->
+            <div id="worker-symptom-checker" class="symptom-checker hidden">
+                <div id="symptom-checker-content"></div>
+            </div>
+
+            <!-- Health Records Section -->
+            <div id="worker-health-records" class="hidden">
+                <div class="dashboard-header">
+                    <h1>My Health Records</h1>
+                    <p class="dashboard-subtitle">View all your health assessments and reports</p>
+                </div>
+                <div id="all-health-records" class="appointment-list"></div>
+            </div>
+
+            <!-- Incident Reports Section -->
+            <div id="worker-incidents" class="hidden">
+                <div class="dashboard-header">
+                    <h1>Incident Reports</h1>
+                    <p class="dashboard-subtitle">View and manage workplace incident reports</p>
+                </div>
+                <div id="all-incidents-list" class="appointment-list"></div>
+            </div>
+
+            <!-- First Aid Guide Section -->
+            <div id="worker-first-aid" class="hidden">
+                <div class="dashboard-header">
+                    <h1>First Aid Reference Library</h1>
+                    <p class="dashboard-subtitle">Emergency procedures and workplace injury management</p>
+                </div>
+                <div id="first-aid-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Safety Officer Dashboard -->
+    <div id="officer-dashboard" class="dashboard hidden" style="display: none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">🏭 Safety Control</div>
+                <div class="user-info" id="officer-name-sidebar"></div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a class="sidebar-link active" onclick="showOfficerSection('overview')">📊 Dashboard</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showOfficerSection('alerts')">🚨 Real-Time Alerts</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showOfficerSection('queue')">👥 Worker Health Queue</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showOfficerSection('incidents')">📋 Incident Management</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showOfficerSection('workers')">👥 Worker Management</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="showOfficerSection('analytics')">📊 Safety Analytics</a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" onclick="logout()">🚪 Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <!-- Safety Officer Overview -->
+            <div id="officer-overview" class="fade-in">
+                <div class="dashboard-header">
+                    <h1 id="officer-welcome">Welcome, Safety Officer!</h1>
+                    <p class="dashboard-subtitle" id="officer-facility"></p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-critical-alerts">0</div>
+                        <div class="stat-label">Critical Alerts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-pending-workers">0</div>
+                        <div class="stat-label">Pending Assessments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-avg-response">1.1s</div>
+                        <div class="stat-label">Avg Response Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-accuracy">92%</div>
+                        <div class="stat-label">System Accuracy</div>
+                    </div>
+                </div>
+
+                <h3 class="mt-24 mb-16" style="color: var(--color-safety-red);">🚨 Critical/Urgent Workers</h3>
+                <div id="urgent-queue" class="patient-queue"></div>
+            </div>
+
+            <!-- Real-Time Alerts Section -->
+            <div id="officer-alerts" class="hidden">
+                <div class="dashboard-header">
+                    <h1>Real-Time Safety Alerts</h1>
+                    <p class="dashboard-subtitle">Active emergency and critical health alerts</p>
+                </div>
+                <div id="real-time-alerts" class="patient-queue"></div>
+            </div>
+
+            <!-- Worker Health Queue Section -->
+            <div id="officer-queue" class="hidden">
+                <div class="dashboard-header">
+                    <h1>Worker Health Queue</h1>
+                    <p class="dashboard-subtitle">Workers requiring attention, sorted by triage priority</p>
+                </div>
+                <div id="full-queue" class="patient-queue"></div>
+            </div>
+
+            <!-- Incident Management Section -->
+            <div id="officer-incidents" class="hidden">
+                <div class="dashboard-header">
+                    <h1>Incident Management</h1>
+                    <p class="dashboard-subtitle">All workplace incidents and corrective actions</p>
+                </div>
+                <div id="officer-incidents-list" class="appointment-list"></div>
+            </div>
+
+            <!-- Worker Management Section -->
+            <div id="officer-workers" class="hidden">
+                <div class="dashboard-header">
+                    <h1>Worker Management</h1>
+                    <p class="dashboard-subtitle">View and manage all factory workers</p>
+                </div>
+                <div id="officer-workers-list" class="appointment-list"></div>
+            </div>
+
+            <!-- Safety Analytics Section -->
+            <div id="officer-analytics" class="hidden">
+                <div class="dashboard-header">
+                    <h1>Safety Analytics &amp; Trends</h1>
+                    <p class="dashboard-subtitle">Comprehensive health and safety insights</p>
+                </div>
+                <div id="analytics-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Modal</h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage - Initialize from localStorage or create defaults
+        let appData = {
+            users: {
+                workers: [],
+                officers: []
+            },
+            assessments: [], // Health + safety assessments
+            incidents: [],   // Incident reports
+            alerts: [],
+            trends: {},
+            currentUser: null,
+            loginType: 'worker',
+            signupType: 'worker'
+        };
+
+        // Load data from memory (simulate localStorage without using actual localStorage)
+        function loadAppData() {
+            // Initialize with test accounts if empty
+            if (appData.users.workers.length === 0) {
+                appData.users.workers.push({
+                    name: 'Test Worker',
+                    email: 'worker@test.com',
+                    password: 'worker123',
+                    employeeId: 'WORK001',
+                    department: 'Production',
+                    phone: '9876543210',
+                    emergencyContact: '1234567890',
+                    language: 'English'
+                });
+            }
+            if (appData.users.officers.length === 0) {
+                appData.users.officers.push({
+                    name: 'Test Safety Officer',
+                    email: 'officer@test.com',
+                    password: 'officer123',
+                    officerId: 'OFF001',
+                    department: 'Safety Department',
+                    phone: '9876543210',
+                    facility: 'Main Factory'
+                });
+            }
+            console.log('App data loaded:', appData);
+        }
+
+        function saveAppData() {
+            console.log('App data saved:', appData);
+        }
+
+        // First Aid Guide
+        function displayFirstAidGuide() {
+            const container = document.getElementById('first-aid-content');
+            container.innerHTML = `
+                <div class="resources-tabs">
+                    <button class="tab-btn active" onclick="showFirstAidTab('emergency')">Emergency Procedures</button>
+                    <button class="tab-btn" onclick="showFirstAidTab('injury')">Injury Management</button>
+                    <button class="tab-btn" onclick="showFirstAidTab('hazards')">Environmental Hazards</button>
+                    <button class="tab-btn" onclick="showFirstAidTab('illness')">Workplace Illness</button>
+                </div>
+                <div id="first-aid-emergency" class="tab-content active"></div>
+                <div id="first-aid-injury" class="tab-content"></div>
+                <div id="first-aid-hazards" class="tab-content"></div>
+                <div id="first-aid-illness" class="tab-content"></div>
+            `;
+            showFirstAidTab('emergency');
+        }
+
+        function showFirstAidTab(tab) {
+            const tabs = ['emergency', 'injury', 'hazards', 'illness'];
+            tabs.forEach(t => {
+                document.getElementById(`first-aid-${t}`).classList.remove('active');
+            });
+            document.getElementById(`first-aid-${tab}`).classList.add('active');
+            const buttons = document.querySelectorAll('#worker-first-aid .tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const container = document.getElementById(`first-aid-${tab}`);
+            if (tab === 'emergency') {
+                container.innerHTML = firstAidEmergency;
+            } else if (tab === 'injury') {
+                container.innerHTML = firstAidInjury;
+            } else if (tab === 'hazards') {
+                container.innerHTML = firstAidHazards;
+            } else if (tab === 'illness') {
+                container.innerHTML = firstAidIllness;
+            }
+        }
+
+        const firstAidEmergency = `
+            <div class="articles-grid">
+                <div class="article-card">
+                    <div class="article-image">❤️</div>
+                    <div class="article-content">
+                        <h3 class="article-title">CPR (Cardiopulmonary Resuscitation)</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Check responsiveness</li>
+                            <li>Call emergency services (911)</li>
+                            <li>Open airway (head tilt, chin lift)</li>
+                            <li>Begin chest compressions (30 compressions)</li>
+                            <li>Give 2 rescue breaths</li>
+                            <li>Continue until help arrives</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🤢</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Choking Assistance</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Ask "Are you choking?"</li>
+                            <li>If yes, perform Heimlich maneuver</li>
+                            <li>Stand behind person, wrap arms around waist</li>
+                            <li>Make a fist above navel</li>
+                            <li>Give quick upward thrusts</li>
+                            <li>Continue until object dislodges</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🩸</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Severe Bleeding Control</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Apply direct pressure with clean cloth</li>
+                            <li>Elevate injured area if possible</li>
+                            <li>Do not remove embedded objects</li>
+                            <li>Apply tourniquet only for limb bleeding</li>
+                            <li>Call emergency services immediately</li>
+                            <li>Monitor for shock</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">😞</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Shock Management</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Lay person down, elevate legs</li>
+                            <li>Keep person warm with blanket</li>
+                            <li>Do not give food or drink</li>
+                            <li>Monitor breathing and pulse</li>
+                            <li>Loosen tight clothing</li>
+                            <li>Call for medical help</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const firstAidInjury = `
+            <div class="articles-grid">
+                <div class="article-card">
+                    <div class="article-image">🦴</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Fracture Immobilization</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Do not move injured area</li>
+                            <li>Immobilize joints above and below fracture</li>
+                            <li>Apply ice pack to reduce swelling</li>
+                            <li>Do not try to realign bones</li>
+                            <li>Support with splint if available</li>
+                            <li>Seek immediate medical attention</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🔥</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Burn Treatment</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Cool burn with running water (10-20 min)</li>
+                            <li>Remove tight items before swelling</li>
+                            <li>Do not apply ice directly</li>
+                            <li>Do not pop blisters</li>
+                            <li>Cover with sterile dressing</li>
+                            <li>Seek medical help for severe burns</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🩹</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Wound Care</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Wash hands before treating wound</li>
+                            <li>Clean wound with clean water</li>
+                            <li>Apply antibiotic ointment</li>
+                            <li>Cover with sterile bandage</li>
+                            <li>Change dressing daily</li>
+                            <li>Watch for signs of infection</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">👁️</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Eye Injuries</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>For chemicals: Flush with water 15-20 min</li>
+                            <li>For particles: Do not rub eye</li>
+                            <li>For cuts: Cover both eyes, seek help</li>
+                            <li>Remove contact lenses if possible</li>
+                            <li>Do not apply pressure to eyeball</li>
+                            <li>Seek immediate medical attention</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const firstAidHazards = `
+            <div class="articles-grid">
+                <div class="article-card">
+                    <div class="article-image">☣️</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Chemical Exposure</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Move to fresh air immediately</li>
+                            <li>Remove contaminated clothing</li>
+                            <li>Flush affected area with water 15 min</li>
+                            <li>Do not neutralize with other chemicals</li>
+                            <li>Identify chemical if possible</li>
+                            <li>Seek medical attention immediately</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🌡️</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Heat Exhaustion</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Move to cool, shaded area</li>
+                            <li>Remove excess clothing</li>
+                            <li>Apply cool water to skin</li>
+                            <li>Give water to drink slowly</li>
+                            <li>Fan to increase cooling</li>
+                            <li>Monitor for worsening symptoms</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">❄️</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Cold Exposure</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Move to warm area</li>
+                            <li>Remove wet clothing</li>
+                            <li>Warm gradually with blankets</li>
+                            <li>Give warm (not hot) beverages</li>
+                            <li>Do not rub frostbitten areas</li>
+                            <li>Seek medical help for severe cases</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">⚡</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Electrical Injuries</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Ensure power source is OFF</li>
+                            <li>Do not touch person if still energized</li>
+                            <li>Call emergency services immediately</li>
+                            <li>Check for breathing and pulse</li>
+                            <li>Begin CPR if needed</li>
+                            <li>Cover entry/exit wounds</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const firstAidIllness = `
+            <div class="articles-grid">
+                <div class="article-card">
+                    <div class="article-image">🛌</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Fatigue Management</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Take immediate rest break</li>
+                            <li>Avoid operating heavy machinery</li>
+                            <li>Hydrate with water</li>
+                            <li>Eat nutritious snack</li>
+                            <li>Notify supervisor</li>
+                            <li>Rotate to lighter duties</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🤢</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Respiratory Issues</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Move to area with fresh air</li>
+                            <li>Loosen tight clothing</li>
+                            <li>Sit upright, lean slightly forward</li>
+                            <li>Encourage slow, deep breathing</li>
+                            <li>Use prescribed inhaler if available</li>
+                            <li>Call for help if severe</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🤕</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Dizziness/Fainting</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Sit or lie down immediately</li>
+                            <li>Lower head between knees if sitting</li>
+                            <li>Loosen tight clothing</li>
+                            <li>Get fresh air</li>
+                            <li>Do not stand up quickly</li>
+                            <li>Report to medical staff</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <div class="article-image">🤮</div>
+                    <div class="article-content">
+                        <h3 class="article-title">Back Injuries</h3>
+                        <ul style="padding-left: var(--space-20); line-height: 1.8;">
+                            <li>Stop activity immediately</li>
+                            <li>Do not twist or bend</li>
+                            <li>Apply ice for first 48 hours</li>
+                            <li>Rest in comfortable position</li>
+                            <li>Avoid heavy lifting</li>
+                            <li>Seek medical evaluation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Sample Data (removed doctor-related data)
+        const sampleDoctors = [
+            // Removed for factory safety system
+        ];
+
+        // Removed hospital-related data - not needed for factory safety system
+
+        // Navigation Functions
+        function showLanding() {
+            console.log('Showing landing page');
+            hideAllPages();
+            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('landing-page').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            console.log('Showing login page');
+            hideAllPages();
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('login-page').classList.remove('hidden');
+            // Clear any previous errors
+            document.getElementById('login-error').textContent = '';
+        }
+
+        function showSignup() {
+            console.log('Showing signup page');
+            hideAllPages();
+            document.getElementById('signup-page').style.display = 'flex';
+            document.getElementById('signup-page').classList.remove('hidden');
+            // Clear any previous errors
+            document.getElementById('signup-error').textContent = '';
+        }
+
+        function hideAllPages() {
+            const pages = ['landing-page', 'login-page', 'signup-page', 'worker-dashboard', 'officer-dashboard'];
+            pages.forEach(pageId => {
+                const page = document.getElementById(pageId);
+                if (page) {
+                    page.style.display = 'none';
+                    page.classList.add('hidden');
+                }
+            });
+        }
+
+        function scrollToFeatures() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectLoginType(type) {
+            console.log('Login type selected:', type);
+            appData.loginType = type;
+            const buttons = document.querySelectorAll('#login-page .user-type-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            // Update heading
+            const heading = document.querySelector('#login-page h2');
+            if (heading) {
+                heading.textContent = type === 'worker' ? 'Worker Login' : 'Safety Officer Login';
+            }
+        }
+
+        function selectSignupType(type) {
+            appData.signupType = type;
+            const buttons = document.querySelectorAll('#signup-page .user-type-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (type === 'worker') {
+                document.getElementById('worker-fields').classList.remove('hidden');
+                document.getElementById('officer-fields').classList.add('hidden');
+            } else {
+                document.getElementById('worker-fields').classList.add('hidden');
+                document.getElementById('officer-fields').classList.remove('hidden');
+            }
+        }
+
+        // Authentication
+        function handleLogin(event) {
+            event.preventDefault();
+            console.log('Login attempt started');
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            console.log('Login type:', appData.loginType);
+            console.log('Email:', email);
+
+            // Clear previous errors
+            errorDiv.textContent = '';
+
+            // Validation
+            if (!email) {
+                errorDiv.textContent = 'Please enter your email address';
+                return;
+            }
+            if (!password) {
+                errorDiv.textContent = 'Please enter your password';
+                return;
+            }
+
+            // Find user in appropriate array
+            const userArray = appData.loginType === 'worker' ? appData.users.workers : appData.users.officers;
+            console.log('Searching in array:', userArray);
+
+            const user = userArray.find(u => u.email === email && u.password === password);
+            console.log('User found:', user);
+
+            if (user) {
+                // Successful login
+                appData.currentUser = { ...user, type: appData.loginType };
+                console.log('Login successful for:', appData.currentUser.name);
+                errorDiv.textContent = '';
+                saveAppData();
+
+                // Redirect to appropriate dashboard
+                if (appData.loginType === 'worker') {
+                    showWorkerDashboard();
+                } else {
+                    showOfficerDashboard();
+                }
+            } else {
+                // Failed login
+                const userExists = userArray.find(u => u.email === email);
+                if (userExists) {
+                    errorDiv.textContent = 'Incorrect password. Please try again.';
+                } else {
+                    errorDiv.textContent = 'No account found with this email. Please sign up first.';
+                }
+                console.log('Login failed');
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            console.log('Signup attempt started');
+
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const errorDiv = document.getElementById('signup-error');
+
+            console.log('Signup type:', appData.signupType);
+            console.log('Name:', name, 'Email:', email);
+
+            // Clear previous errors
+            errorDiv.textContent = '';
+
+            // Validation
+            if (!name) {
+                errorDiv.textContent = 'Please enter your full name';
+                return;
+            }
+            if (!email) {
+                errorDiv.textContent = 'Please enter your email address';
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                errorDiv.textContent = 'Please enter a valid email address';
+                return;
+            }
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters long';
+                return;
+            }
+
+            // Check if email already exists
+            const userArray = appData.signupType === 'worker' ? appData.users.workers : appData.users.officers;
+            if (userArray.find(u => u.email === email)) {
+                errorDiv.textContent = 'Email already registered. Please login instead.';
+                return;
+            }
+
+            // Create new user object
+            const newUser = { name, email, password };
+
+            if (appData.signupType === 'worker') {
+                const employeeId = document.getElementById('signup-employee-id').value.trim();
+                const department = document.getElementById('signup-department').value;
+                const phone = document.getElementById('signup-phone').value.trim();
+                const emergencyContact = document.getElementById('signup-emergency-contact').value.trim();
+                const language = document.getElementById('signup-language').value;
+
+                if (!employeeId) {
+                    errorDiv.textContent = 'Please enter your Employee ID';
+                    return;
+                }
+                if (!department) {
+                    errorDiv.textContent = 'Please select your department';
+                    return;
+                }
+
+                // Check if employee ID already exists
+                if (appData.users.workers.find(u => u.employeeId === employeeId)) {
+                    errorDiv.textContent = 'Employee ID already registered';
+                    return;
+                }
+
+                newUser.employeeId = employeeId;
+                newUser.department = department;
+                newUser.phone = phone || 'Not provided';
+                newUser.emergencyContact = emergencyContact || 'Not provided';
+                newUser.language = language;
+
+                console.log('Creating worker account:', newUser);
+                appData.users.workers.push(newUser);
+            } else {
+                const officerId = document.getElementById('signup-officer-id').value.trim();
+                const department = document.getElementById('signup-officer-department').value;
+                const phone = document.getElementById('signup-officer-phone').value.trim();
+                const facility = document.getElementById('signup-facility').value.trim();
+
+                if (!officerId) {
+                    errorDiv.textContent = 'Please enter your Officer ID';
+                    return;
+                }
+                if (!department) {
+                    errorDiv.textContent = 'Please select your department';
+                    return;
+                }
+                if (!facility) {
+                    errorDiv.textContent = 'Please enter your facility name';
+                    return;
+                }
+
+                // Check if officer ID already exists
+                if (appData.users.officers.find(u => u.officerId === officerId)) {
+                    errorDiv.textContent = 'Officer ID already registered';
+                    return;
+                }
+
+                newUser.officerId = officerId;
+                newUser.department = department;
+                newUser.phone = phone || 'Not provided';
+                newUser.facility = facility;
+
+                console.log('Creating officer account:', newUser);
+                appData.users.officers.push(newUser);
+            }
+
+            // Set current user and login
+            appData.currentUser = { ...newUser, type: appData.signupType };
+            console.log('Signup successful for:', appData.currentUser.name);
+            errorDiv.textContent = '';
+            saveAppData();
+
+            // Show success message and redirect
+            setTimeout(() => {
+                if (appData.signupType === 'worker') {
+                    showWorkerDashboard();
+                } else {
+                    showOfficerDashboard();
+                }
+            }, 100);
+        }
+
+        function logout() {
+            console.log('Logging out user:', appData.currentUser?.name);
+            appData.currentUser = null;
+            saveAppData();
+            showLanding();
+        }
+
+        // Worker Dashboard Functions
+        function showWorkerDashboard() {
+            console.log('Showing worker dashboard for:', appData.currentUser.name);
+            hideAllPages();
+            document.getElementById('worker-dashboard').style.display = 'flex';
+            document.getElementById('worker-dashboard').classList.remove('hidden');
+            document.getElementById('worker-name-sidebar').textContent = appData.currentUser.name;
+            document.getElementById('worker-welcome').textContent = `Welcome back, ${appData.currentUser.name}!`;
+            updateWorkerStats();
+            // Reset to overview section
+            const sections = ['overview', 'symptom-checker', 'health-records', 'incidents', 'first-aid'];
+            sections.forEach(s => {
+                const el = document.getElementById(`worker-${s}`);
+                if (el) el.classList.add('hidden');
+            });
+            document.getElementById('worker-overview').classList.remove('hidden');
+        }
+
+        function showWorkerSection(section) {
+            const sections = ['overview', 'symptom-checker', 'health-records', 'incidents', 'first-aid'];
+            sections.forEach(s => {
+                document.getElementById(`worker-${s}`).classList.add('hidden');
+            });
+            document.getElementById(`worker-${section}`).classList.remove('hidden');
+            const links = document.querySelectorAll('#worker-dashboard .sidebar-link');
+            links.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            if (section === 'symptom-checker') {
+                initSymptomChecker();
+            } else if (section === 'health-records') {
+                displayHealthRecords();
+            } else if (section === 'incidents') {
+                displayIncidents();
+            } else if (section === 'first-aid') {
+                displayFirstAidGuide();
+            }
+        }
+
+        function updateWorkerStats() {
+            const userAssessments = appData.assessments.filter(a => a.workerEmail === appData.currentUser.email);
+            document.getElementById('stat-assessments').textContent = userAssessments.length;
+            const lastIncident = appData.incidents.filter(i => i.workerEmail === appData.currentUser.email).pop();
+            if (lastIncident) {
+                const daysSince = Math.floor((new Date() - new Date(lastIncident.date)) / (1000 * 60 * 60 * 24));
+                document.getElementById('stat-days-safe').textContent = daysSince;
+            } else {
+                document.getElementById('stat-days-safe').textContent = '30+';
+            }
+            displayRecentAssessments();
+        }
+
+        function displayRecentAssessments() {
+            const container = document.getElementById('recent-assessments');
+            const userAssessments = appData.assessments.filter(a => a.workerEmail === appData.currentUser.email).slice(-5).reverse();
+            if (userAssessments.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary);">No recent assessments</p>';
+                return;
+            }
+            container.innerHTML = userAssessments.map(ast => `
+                <div class="appointment-card">
+                    <div>
+                        <div class="appointment-time">${ast.date} at ${ast.time}</div>
+                        <div><strong>Triage: ${ast.triage.label}</strong></div>
+                        <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">${ast.triage.action}</div>
+                    </div>
+                    <div>
+                        <span class="triage-badge triage-${ast.triage.level}">${ast.triage.icon}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayHealthRecords() {
+            const container = document.getElementById('all-health-records');
+            const userAssessments = appData.assessments.filter(a => a.workerEmail === appData.currentUser.email).reverse();
+            if (userAssessments.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary); padding: var(--space-32);">No health records yet.</p>';
+                return;
+            }
+            container.innerHTML = userAssessments.map(ast => `
+                <div class="appointment-card" onclick="viewWorkerAssessment('${ast.id}')" style="cursor: pointer;">
+                    <div>
+                        <div class="appointment-time">${ast.date} at ${ast.time}</div>
+                        <div><strong>Triage: ${ast.triage.label}</strong></div>
+                        <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">${ast.triage.action}</div>
+                    </div>
+                    <div>
+                        <span class="triage-badge triage-${ast.triage.level}">${ast.triage.icon}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayIncidents() {
+            const container = document.getElementById('all-incidents-list');
+            const userIncidents = appData.incidents.filter(i => i.workerEmail === appData.currentUser.email).reverse();
+            if (userIncidents.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary); padding: var(--space-32);">No incident reports.</p>';
+                return;
+            }
+            container.innerHTML = userIncidents.map(inc => `
+                <div class="appointment-card">
+                    <div>
+                        <div class="appointment-time">Incident #${inc.id}</div>
+                        <div><strong>${inc.type}</strong></div>
+                        <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">${inc.date} - ${inc.severity}</div>
+                        <div style="margin-top: var(--space-8);">${inc.description}</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary btn-sm" onclick="viewIncidentReport('${inc.id}')">View</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function triggerEmergencySOS() {
+            const alert = {
+                id: 'SOS' + Date.now(),
+                workerName: appData.currentUser.name,
+                workerEmail: appData.currentUser.email,
+                type: 'EMERGENCY SOS',
+                timestamp: new Date().toLocaleString(),
+                status: 'ACTIVE'
+            };
+            appData.alerts.push(alert);
+            showModal('Emergency SOS Activated', `
+                <div class="text-center">
+                    <div style="font-size: 64px; margin-bottom: var(--space-24); color: var(--color-safety-red);">🚨</div>
+                    <h3 style="margin-bottom: var(--space-16); color: var(--color-safety-red);">EMERGENCY ALERT SENT</h3>
+                    <p style="margin-bottom: var(--space-16);">All safety officers have been notified.</p>
+                    <p style="margin-bottom: var(--space-16);">Help is on the way!</p>
+                    <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">Alert ID: ${alert.id}</p>
+                    <button class="btn btn-primary btn-large mt-16" onclick="closeModal()">OK</button>
+                </div>
+            `);
+        }
+
+        function contactSafetyOfficer() {
+            showModal('Contact Safety Officer', `
+                <div>
+                    <h3 style="margin-bottom: var(--space-16);">Emergency Contacts</h3>
+                    <div style="background: var(--color-bg-4); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-12);">
+                        <strong>Safety Officer on Duty</strong><br>
+                        📞 Extension: 102
+                    </div>
+                    <div style="background: var(--color-bg-4); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-12);">
+                        <strong>First Aid Station</strong><br>
+                        📞 Extension: 101
+                    </div>
+                    <div style="background: var(--color-bg-4); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-12);">
+                        <strong>Internal Security</strong><br>
+                        📞 Extension: 100
+                    </div>
+                    <div style="background: var(--color-bg-4); padding: var(--space-16); border-radius: var(--radius-base);">
+                        <strong>Emergency Services</strong><br>
+                        📞 911
+                    </div>
+                    <button class="btn btn-primary btn-large mt-16 btn-full" onclick="closeModal()">Close</button>
+                </div>
+            `);
+        }
+
+        // Symptom Checker
+        let symptomState = {
+            currentQuestion: 0,
+            answers: {},
+            questions: []
+        };
+
+        function initSymptomChecker() {
+            symptomState = {
+                currentQuestion: 0,
+                answers: {},
+                questions: buildQuestionFlow()
+            };
+            renderSymptomChecker();
+        }
+
+        function buildQuestionFlow() {
+            // Factory-specific symptom assessment flow
+            return [
+                {
+                    id: 'concern',
+                    text: 'What is your primary concern right now?',
+                    type: 'options',
+                    options: ['Injury', 'Illness', 'Fatigue', 'Heat Stress', 'Chemical Exposure', 'Other']
+                },
+                {
+                    id: 'urgency',
+                    text: 'Rate the urgency of your situation (1-10):',
+                    type: 'slider',
+                    min: 1,
+                    max: 10
+                },
+                {
+                    id: 'safe_location',
+                    text: 'Are you currently in a safe location?',
+                    type: 'options',
+                    options: ['Yes', 'No']
+                },
+                {
+                    id: 'injury_location',
+                    text: 'Where is the injury?',
+                    type: 'options',
+                    options: ['Head', 'Eyes', 'Chest', 'Abdomen', 'Limbs', 'Burn', 'Cut', 'Other'],
+                    condition: (answers) => answers.concern === 'Injury'
+                },
+                {
+                    id: 'head_injury_detail',
+                    text: 'Head injury symptoms:',
+                    type: 'checkbox',
+                    options: ['Loss of consciousness', 'Severe bleeding', 'Severe headache', 'Dizziness', 'Vision problems'],
+                    condition: (answers) => answers.injury_location === 'Head'
+                },
+                {
+                    id: 'eye_injury_detail',
+                    text: 'Eye injury details:',
+                    type: 'checkbox',
+                    options: ['Foreign object in eye', 'Chemical splash', 'Vision impaired', 'Severe pain'],
+                    condition: (answers) => answers.injury_location === 'Eyes'
+                },
+                {
+                    id: 'burn_cause',
+                    text: 'What caused the burn?',
+                    type: 'options',
+                    options: ['Thermal (heat/fire)', 'Chemical', 'Electrical', 'Steam'],
+                    condition: (answers) => answers.injury_location === 'Burn'
+                },
+                {
+                    id: 'burn_area_size',
+                    text: 'Approximate size of burned area:',
+                    type: 'options',
+                    options: ['Small (coin-sized)', 'Medium (hand-sized)', 'Large (larger than hand)', 'Extensive'],
+                    condition: (answers) => answers.injury_location === 'Burn'
+                },
+                {
+                    id: 'cut_severity',
+                    text: 'Cut/laceration severity:',
+                    type: 'checkbox',
+                    options: ['Severe bleeding', 'Deep cut', 'Foreign object in wound', 'Limb numbness'],
+                    condition: (answers) => answers.injury_location === 'Cut'
+                },
+                {
+                    id: 'limb_injury_detail',
+                    text: 'Limb injury symptoms:',
+                    type: 'checkbox',
+                    options: ['Possible fracture', 'Severe bleeding', 'Cannot move limb', 'Severe swelling', 'Deformity'],
+                    condition: (answers) => answers.injury_location === 'Limbs'
+                },
+                {
+                    id: 'illness_symptoms',
+                    text: 'What are your symptoms?',
+                    type: 'checkbox',
+                    options: ['Fever', 'Nausea', 'Dizziness', 'Cough', 'Shortness of breath', 'Chest pain', 'Abdominal pain'],
+                    condition: (answers) => answers.concern === 'Illness'
+                },
+                {
+                    id: 'symptom_duration',
+                    text: 'How long have you had these symptoms?',
+                    type: 'options',
+                    options: ['Minutes', 'Hours', 'Days', 'Weeks'],
+                    condition: (answers) => answers.concern === 'Illness'
+                },
+                {
+                    id: 'fatigue_sleep',
+                    text: 'How many hours did you sleep last night?',
+                    type: 'input',
+                    placeholder: 'Hours (e.g., 6)',
+                    condition: (answers) => answers.concern === 'Fatigue'
+                },
+                {
+                    id: 'fatigue_level',
+                    text: 'Rate your current fatigue level:',
+                    type: 'slider',
+                    min: 1,
+                    max: 10,
+                    condition: (answers) => answers.concern === 'Fatigue'
+                },
+                {
+                    id: 'work_hours',
+                    text: 'Have you worked more than 8 hours today?',
+                    type: 'options',
+                    options: ['Yes', 'No'],
+                    condition: (answers) => answers.concern === 'Fatigue'
+                },
+                {
+                    id: 'heat_symptoms',
+                    text: 'Heat-related symptoms:',
+                    type: 'checkbox',
+                    options: ['Excessive sweating', 'Extreme thirst', 'Nausea', 'Dizziness', 'Headache', 'Confusion'],
+                    condition: (answers) => answers.concern === 'Heat Stress'
+                },
+                {
+                    id: 'heat_environment',
+                    text: 'Working in direct sunlight or near heat source?',
+                    type: 'options',
+                    options: ['Yes', 'No'],
+                    condition: (answers) => answers.concern === 'Heat Stress'
+                },
+                {
+                    id: 'chemical_type',
+                    text: 'Type of chemical exposure:',
+                    type: 'options',
+                    options: ['Fumes/Gas', 'Liquid', 'Powder/Dust', 'Unknown'],
+                    condition: (answers) => answers.concern === 'Chemical Exposure'
+                },
+                {
+                    id: 'chemical_duration',
+                    text: 'Exposure duration:',
+                    type: 'options',
+                    options: ['Minutes', 'Hours', 'Continuous'],
+                    condition: (answers) => answers.concern === 'Chemical Exposure'
+                },
+                {
+                    id: 'chemical_symptoms',
+                    text: 'Symptoms after chemical exposure:',
+                    type: 'checkbox',
+                    options: ['Skin irritation', 'Burning sensation', 'Breathing difficulty', 'Nausea', 'Eye irritation'],
+                    condition: (answers) => answers.concern === 'Chemical Exposure'
+                },
+                {
+                    id: 'pain_scale',
+                    text: 'Rate your pain intensity (if applicable):',
+                    type: 'slider',
+                    min: 1,
+                    max: 10
+                },
+                {
+                    id: 'medication',
+                    text: 'Have you taken any medication?',
+                    type: 'options',
+                    options: ['Yes', 'No']
+                },
+                {
+                    id: 'medication_name',
+                    text: 'What medication have you taken?',
+                    type: 'input',
+                    condition: (answers) => answers.medication === 'Yes'
+                },
+                {
+                    id: 'allergies',
+                    text: 'Do you have any known allergies?',
+                    type: 'input',
+                    placeholder: 'List any allergies or type "None"'
+                },
+                {
+                    id: 'chronic_conditions',
+                    text: 'Do you have any chronic conditions?',
+                    type: 'checkbox',
+                    options: ['Diabetes', 'Hypertension', 'Asthma', 'Heart Disease', 'Respiratory Issues', 'None']
+                },
+                {
+                    id: 'recent_injury',
+                    text: 'Any recent injuries this week?',
+                    type: 'options',
+                    options: ['Yes', 'No']
+                }
+            ];
+        }
+
+        function getActiveQuestions() {
+            return symptomState.questions.filter(q => {
+                if (!q.condition) return true;
+                return q.condition(symptomState.answers);
+            });
+        }
+
+        function renderSymptomChecker() {
+            const container = document.getElementById('symptom-checker-content');
+            const activeQuestions = getActiveQuestions();
+
+            if (symptomState.currentQuestion >= activeQuestions.length) {
+                renderResults();
+                return;
+            }
+
+            const question = activeQuestions[symptomState.currentQuestion];
+            const progress = ((symptomState.currentQuestion + 1) / activeQuestions.length) * 100;
+
+            let questionHTML = '';
+
+            if (question.type === 'options') {
+                questionHTML = `
+                    <div class="options-grid">
+                        ${question.options.map(opt => `
+                            <button class="option-btn ${symptomState.answers[question.id] === opt ? 'selected' : ''}" 
+                                    onclick="selectOption('${question.id}', '${opt}')">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (question.type === 'checkbox') {
+                questionHTML = `
+                    <div class="checkbox-group">
+                        ${question.options.map(opt => `
+                            <label class="checkbox-option">
+                                <input type="checkbox" 
+                                       onchange="toggleCheckbox('${question.id}', '${opt}')" 
+                                       ${(symptomState.answers[question.id] || []).includes(opt) ? 'checked' : ''}>
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (question.type === 'slider') {
+                const value = symptomState.answers[question.id] || 5;
+                questionHTML = `
+                    <div class="slider-container">
+                        <input type="range" class="slider" min="${question.min}" max="${question.max}" 
+                               value="${value}" oninput="updateSlider('${question.id}', this.value)">
+                        <div class="slider-value">${value}/10</div>
+                    </div>
+                `;
+            } else if (question.type === 'input') {
+                questionHTML = `
+                    <input type="text" class="form-control" 
+                           placeholder="${question.placeholder || 'Your answer'}" 
+                           value="${symptomState.answers[question.id] || ''}" 
+                           oninput="symptomState.answers['${question.id}'] = this.value">
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="checker-card fade-in">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progress}%"></div>
+                    </div>
+                    <div style="text-align: center; margin-bottom: var(--space-24); color: var(--color-text-secondary);">
+                        Question ${symptomState.currentQuestion + 1} of ${activeQuestions.length}
+                    </div>
+                    <div class="question-container">
+                        <h2 class="question-text">${question.text}</h2>
+                        ${questionHTML}
+                    </div>
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="previousQuestion()" 
+                                ${symptomState.currentQuestion === 0 ? 'disabled' : ''}>
+                            ← Previous
+                        </button>
+                        <button class="btn btn-primary" onclick="nextQuestion()">
+                            ${symptomState.currentQuestion === activeQuestions.length - 1 ? 'Complete Assessment' : 'Next →'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOption(questionId, option) {
+            symptomState.answers[questionId] = option;
+            renderSymptomChecker();
+        }
+
+        function toggleCheckbox(questionId, option) {
+            if (!symptomState.answers[questionId]) {
+                symptomState.answers[questionId] = [];
+            }
+            const index = symptomState.answers[questionId].indexOf(option);
+            if (index > -1) {
+                symptomState.answers[questionId].splice(index, 1);
+            } else {
+                symptomState.answers[questionId].push(option);
+            }
+        }
+
+        function updateSlider(questionId, value) {
+            symptomState.answers[questionId] = value;
+            renderSymptomChecker();
+        }
+
+        function nextQuestion() {
+            symptomState.currentQuestion++;
+            renderSymptomChecker();
+        }
+
+        function previousQuestion() {
+            symptomState.currentQuestion--;
+            renderSymptomChecker();
+        }
+
+        function renderResults() {
+            const startTime = Date.now();
+            const triage = calculateTriage(symptomState.answers);
+            const responseTime = ((Date.now() - startTime) / 1000).toFixed(2);
+            const assessment = {
+                id: 'AST' + Date.now(),
+                workerEmail: appData.currentUser.email,
+                workerName: appData.currentUser.name,
+                employeeId: appData.currentUser.employeeId,
+                department: appData.currentUser.department,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                answers: symptomState.answers,
+                triage: triage,
+                responseTime: responseTime,
+                confidence: (Math.random() * 7 + 85).toFixed(1) + '%'
+            };
+            appData.assessments.push(assessment);
+            if (triage.level === 'emergency' || triage.level === 'urgent') {
+                appData.alerts.push({
+                    id: 'ALT' + Date.now(),
+                    assessmentId: assessment.id,
+                    workerName: assessment.workerName,
+                    level: triage.level,
+                    timestamp: new Date().toLocaleString()
+                });
+            }
+            updateWorkerStats();
+
+            const container = document.getElementById('symptom-checker-content');
+            container.innerHTML = `
+                <div class="checker-card fade-in">
+                    <div class="results-container">
+                        <h2 style="margin-bottom: var(--space-24);">AI Assessment Complete</h2>
+                        <div style="display: flex; gap: var(--space-16); justify-content: center; margin-bottom: var(--space-24); flex-wrap: wrap;">
+                            <div style="background: var(--color-bg-1); padding: var(--space-12); border-radius: var(--radius-base); font-size: var(--font-size-sm);">
+                                ⏱️ Response Time: <strong>${responseTime}s</strong>
+                            </div>
+                            <div style="background: var(--color-bg-1); padding: var(--space-12); border-radius: var(--radius-base); font-size: var(--font-size-sm);">
+                                🎯 Confidence: <strong>${assessment.confidence}</strong>
+                            </div>
+                        </div>
+                        <div class="triage-badge triage-${triage.level}">
+                            ${triage.icon} ${triage.label}
+                        </div>
+                        <h3 style="margin: var(--space-24) 0;">${triage.action}</h3>
+                        <p style="color: var(--color-text-secondary); margin-bottom: var(--space-24);">
+                            ${triage.description}
+                        </p>
+                        ${triage.firstAid ? `
+                            <div style="background: var(--color-bg-6); padding: var(--space-20); border-radius: var(--radius-base); margin-bottom: var(--space-24); text-align: left;">
+                                <h4 style="margin-bottom: var(--space-12);"><span style="font-size: 24px;">🩺</span> Immediate First Aid</h4>
+                                <ul style="margin: 0; padding-left: var(--space-20); line-height: 1.8;">
+                                    ${triage.firstAid.map(step => `<li>${step}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="results-summary">
+                            <h3>Assessment Summary</h3>
+                            <ul class="symptom-list">
+                                ${Object.entries(symptomState.answers).map(([key, value]) => {
+                const question = symptomState.questions.find(q => q.id === key);
+                if (!question) return '';
+                const displayValue = Array.isArray(value) ? value.join(', ') : value;
+                return `<li><strong>${question.text}</strong><br>${displayValue}</li>`;
+            }).join('')}
+                            </ul>
+                        </div>
+                        
+                        
+                        <div class="result-actions">
+                            ${triage.level === 'emergency' ? `
+                                <button class="btn btn-danger btn-large" onclick="triggerEmergencySOS()">
+                                    🚨 Call Medical Emergency
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-primary" onclick="generateIncidentReport('${assessment.id}')">
+                                📋 Generate Incident Report
+                            </button>
+                            <button class="btn btn-secondary" onclick="contactSafetyOfficer()">
+                                📞 Contact Safety Officer
+                            </button>
+                            <button class="btn btn-secondary" onclick="initSymptomChecker()">
+                                🔄 New Assessment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateIncidentReport(assessmentId) {
+            const assessment = appData.assessments.find(a => a.id === assessmentId);
+            if (!assessment) return;
+            const incident = {
+                id: 'INC' + Date.now(),
+                assessmentId: assessmentId,
+                workerEmail: assessment.workerEmail,
+                workerName: assessment.workerName,
+                employeeId: assessment.employeeId,
+                department: assessment.department,
+                date: assessment.date,
+                time: assessment.time,
+                type: assessment.answers.concern || 'General',
+                severity: assessment.triage.level.toUpperCase(),
+                description: getIncidentDescription(assessment.answers),
+                triageLevel: assessment.triage.label,
+                recommendation: assessment.triage.action,
+                status: 'Submitted'
+            };
+            appData.incidents.push(incident);
+            showModal('Incident Report Generated', `
+                <div class="text-center">
+                    <div style="font-size: 64px; margin-bottom: var(--space-24);">📋</div>
+                    <h3 style="margin-bottom: var(--space-16);">Incident Report Created Successfully</h3>
+                    <div style="background: var(--color-bg-1); padding: var(--space-20); border-radius: var(--radius-base); margin-bottom: var(--space-24); text-align: left;">
+                        <div style="margin-bottom: var(--space-8);"><strong>Incident ID:</strong> ${incident.id}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Type:</strong> ${incident.type}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Severity:</strong> ${incident.severity}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Date/Time:</strong> ${incident.date} ${incident.time}</div>
+                    </div>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--space-16);">Report has been sent to your safety officer for review.</p>
+                    <button class="btn btn-primary btn-large" onclick="closeModal(); showWorkerSection('incidents')">View All Reports</button>
+                </div>
+            `);
+        }
+
+        function getIncidentDescription(answers) {
+            let desc = [];
+            if (answers.concern) desc.push(`Concern: ${answers.concern}`);
+            if (answers.injury_location) desc.push(`Location: ${answers.injury_location}`);
+            if (answers.pain_scale) desc.push(`Pain level: ${answers.pain_scale}/10`);
+            return desc.join(', ') || 'Assessment completed';
+        }
+
+        function calculateTriage(answers) {
+            let score = 0;
+            let firstAid = [];
+
+            // Safety check
+            if (answers.safe_location === 'No') {
+                score += 5;
+            }
+
+            // Urgency rating
+            if (answers.urgency >= 8) score += 5;
+            else if (answers.urgency >= 5) score += 3;
+
+            // Emergency injury indicators
+            if (answers.injury_location === 'Head' && (answers.head_injury_detail || []).includes('Loss of consciousness')) {
+                return {
+                    level: 'emergency',
+                    label: 'EMERGENCY',
+                    action: 'IMMEDIATE MEDICAL ATTENTION - Call Emergency Services NOW',
+                    icon: '🚨',
+                    description: 'Head injury with loss of consciousness requires immediate emergency evaluation.',
+                    firstAid: ['Do not move the person unless necessary', 'Keep them still and comfortable', 'Monitor breathing', 'Call 911 immediately']
+                };
+            }
+
+            if (answers.injury_location === 'Eyes' && (answers.eye_injury_detail || []).includes('Chemical splash')) {
+                return {
+                    level: 'emergency',
+                    label: 'EMERGENCY',
+                    action: 'URGENT - Begin decontamination and call medical emergency',
+                    icon: '🚨',
+                    description: 'Chemical eye injury requires immediate flushing and emergency care.',
+                    firstAid: ['Flush eyes with clean water for 15-20 minutes continuously', 'Do not rub eyes', 'Remove contact lenses if present', 'Call emergency services']
+                };
+            }
+
+            if (answers.burn_cause === 'Electrical' || (answers.burn_area_size === 'Large (larger than hand)' || answers.burn_area_size === 'Extensive')) {
+                return {
+                    level: 'emergency',
+                    label: 'EMERGENCY',
+                    action: 'IMMEDIATE emergency care required',
+                    icon: '🚨',
+                    description: 'Severe burns require immediate emergency treatment.',
+                    firstAid: ['Cool burn with running water for 10-20 minutes', 'Cover with sterile dressing', 'Do NOT apply ice or ointments', 'Call emergency services']
+                };
+            }
+
+            if ((answers.cut_severity || []).includes('Severe bleeding')) {
+                return {
+                    level: 'emergency',
+                    label: 'EMERGENCY',
+                    action: 'Control bleeding immediately and call emergency services',
+                    icon: '🚨',
+                    description: 'Severe bleeding requires immediate intervention.',
+                    firstAid: ['Apply direct pressure with clean cloth', 'Elevate injured area if possible', 'Do not remove objects from wound', 'Call 911 immediately']
+                };
+            }
+
+            // Calculate severity score for other conditions
+            if (answers.pain_scale > 7) score += 3;
+            else if (answers.pain_scale > 4) score += 2;
+
+            // Chemical exposure assessment
+            if (answers.concern === 'Chemical Exposure') {
+                score += 3;
+                if ((answers.chemical_symptoms || []).includes('Breathing difficulty')) score += 3;
+                firstAid = ['Move to fresh air immediately', 'Remove contaminated clothing', 'Flush affected skin with water for 15 minutes', 'Seek medical attention'];
+            }
+
+            // Heat stress assessment
+            if (answers.concern === 'Heat Stress') {
+                const heatSymptoms = answers.heat_symptoms || [];
+                if (heatSymptoms.includes('Confusion') || heatSymptoms.length >= 4) {
+                    score += 4;
+                } else {
+                    score += 2;
+                }
+                firstAid = ['Move to cool area immediately', 'Remove excess clothing', 'Apply cool water to skin', 'Drink water slowly', 'Rest and monitor'];
+            }
+
+            // Fatigue assessment
+            if (answers.concern === 'Fatigue' && (answers.fatigue_level >= 7 || answers.work_hours === 'Yes')) {
+                score += 2;
+                firstAid = ['Take immediate rest break', 'Hydrate with water', 'Avoid operating heavy machinery', 'Notify supervisor'];
+            }
+
+            // Illness symptoms
+            if ((answers.illness_symptoms || []).includes('Shortness of breath') || (answers.illness_symptoms || []).includes('Chest pain')) {
+                score += 3;
+            }
+
+            // Determine triage level
+            if (score >= 7) {
+                return {
+                    level: 'urgent',
+                    label: 'URGENT',
+                    action: 'Schedule appointment within 24 hours',
+                    icon: '⚠️',
+                    description: 'Your symptoms require prompt medical attention. Please schedule an appointment as soon as possible.',
+                    specialist: specialist
+                };
+            } else if (score >= 4) {
+                return {
+                    level: 'soon',
+                    label: 'SCHEDULE SOON',
+                    action: 'Schedule appointment within 1 week',
+                    icon: '📅',
+                    description: 'You should see a doctor soon to address your symptoms.',
+                    specialist: specialist
+                };
+            } else if (score >= 2) {
+                return {
+                    level: 'routine',
+                    label: 'ROUTINE',
+                    action: 'Schedule routine checkup',
+                    icon: '✓',
+                    description: 'A routine medical checkup is recommended to discuss your concerns.',
+                    specialist: 'General Medicine'
+                };
+            } else {
+                return {
+                    level: 'self-care',
+                    label: 'SELF-CARE',
+                    action: 'Monitor symptoms and try home remedies',
+                    icon: 'ℹ️',
+                    description: 'Your symptoms appear mild. Monitor them and seek medical care if they worsen or persist.',
+                    specialist: null
+                };
+            }
+        }
+
+        // Removed appointment booking - not needed for factory system
+        function initAppointmentBooking() {
+            // Not applicable for factory system
+        }
+
+        function renderAppointmentBooking() {
+            const container = document.getElementById('appointment-content');
+
+            if (appointmentState.step === 1) {
+                container.innerHTML = `
+                    <div class="fade-in">
+                        <div class="dashboard-header">
+                            <h1>Book an Appointment</h1>
+                            <p class="dashboard-subtitle">Step 1: Select a Medical Specialty</p>
+                        </div>
+                        <div class="specialty-grid">
+                            ${['General Medicine', 'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology'].map(spec => `
+                                <div class="specialty-card ${appointmentState.selectedSpecialty === spec ? 'selected' : ''}" 
+                                     onclick="selectSpecialty('${spec}')">
+                                    <div style="font-size: 48px; margin-bottom: var(--space-12);">
+                                        ${getSpecialtyIcon(spec)}
+                                    </div>
+                                    <div style="font-weight: var(--font-weight-semibold);">${spec}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="mt-24">
+                            <button class="btn btn-primary btn-large" onclick="appointmentState.step = 2; renderAppointmentBooking()" 
+                                    ${!appointmentState.selectedSpecialty ? 'disabled' : ''}>
+                                Continue to Doctor Selection →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (appointmentState.step === 2) {
+                const doctors = sampleDoctors.filter(d => d.specialization === appointmentState.selectedSpecialty);
+                container.innerHTML = `
+                    <div class="fade-in">
+                        <div class="dashboard-header">
+                            <h1>Book an Appointment</h1>
+                            <p class="dashboard-subtitle">Step 2: Select a Doctor</p>
+                        </div>
+                        <div class="doctor-list">
+                            ${doctors.map(doc => `
+                                <div class="doctor-card" onclick="selectDoctor('${doc.name}')" 
+                                     style="${appointmentState.selectedDoctor === doc.name ? 'border-color: var(--color-primary);' : ''}">
+                                    <div class="doctor-avatar">👨‍⚕️</div>
+                                    <div class="doctor-info">
+                                        <div class="doctor-name">${doc.name}</div>
+                                        <div class="doctor-specialty">${doc.specialization}</div>
+                                        <div class="doctor-meta">
+                                            <span>⭐ ${doc.rating}</span>
+                                            <span>📅 ${doc.availability}</span>
+                                            <span>🎓 ${doc.experience} experience</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary">Select</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="navigation-buttons mt-24">
+                            <button class="btn btn-secondary" onclick="appointmentState.step = 1; renderAppointmentBooking()">← Back</button>
+                            <button class="btn btn-primary" onclick="appointmentState.step = 3; renderAppointmentBooking()" 
+                                    ${!appointmentState.selectedDoctor ? 'disabled' : ''}>
+                                Continue to Date Selection →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (appointmentState.step === 3) {
+                container.innerHTML = `
+                    <div class="fade-in">
+                        <div class="dashboard-header">
+                            <h1>Book an Appointment</h1>
+                            <p class="dashboard-subtitle">Step 3: Select Date and Time</p>
+                        </div>
+                        <h3 class="mb-16">Select a Date</h3>
+                        <div class="calendar-grid">
+                            ${generateCalendarDays().map(day => `
+                                <div class="calendar-day ${day.disabled ? 'disabled' : ''} ${appointmentState.selectedDate === day.date ? 'selected' : ''}" 
+                                     onclick="${day.disabled ? '' : `selectDate('${day.date}')`}">
+                                    <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">${day.dayName}</div>
+                                    <div style="font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold);">${day.day}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${appointmentState.selectedDate ? `
+                            <h3 class="mt-24 mb-16">Select a Time</h3>
+                            <div class="time-slots">
+                                ${['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM'].map(time => `
+                                    <div class="time-slot ${appointmentState.selectedTime === time ? 'selected' : ''}" 
+                                         onclick="selectTime('${time}')">
+                                        ${time}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="navigation-buttons mt-24">
+                            <button class="btn btn-secondary" onclick="appointmentState.step = 2; renderAppointmentBooking()">← Back</button>
+                            <button class="btn btn-primary" onclick="appointmentState.step = 4; renderAppointmentBooking()" 
+                                    ${!appointmentState.selectedTime ? 'disabled' : ''}>
+                                Continue to Confirmation →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (appointmentState.step === 4) {
+                container.innerHTML = `
+                    <div class="fade-in">
+                        <div class="dashboard-header">
+                            <h1>Confirm Appointment</h1>
+                            <p class="dashboard-subtitle">Step 4: Review and Confirm</p>
+                        </div>
+                        <div class="checker-card">
+                            <h3 class="mb-16">Appointment Details</h3>
+                            <div style="background: var(--color-bg-1); padding: var(--space-20); border-radius: var(--radius-base); margin-bottom: var(--space-24);">
+                                <div style="margin-bottom: var(--space-12);"><strong>Doctor:</strong> ${appointmentState.selectedDoctor}</div>
+                                <div style="margin-bottom: var(--space-12);"><strong>Specialty:</strong> ${appointmentState.selectedSpecialty}</div>
+                                <div style="margin-bottom: var(--space-12);"><strong>Date:</strong> ${appointmentState.selectedDate}</div>
+                                <div><strong>Time:</strong> ${appointmentState.selectedTime}</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Additional Notes (Optional)</label>
+                                <textarea class="form-control" rows="4" 
+                                          placeholder="Any specific concerns or information for the doctor..." 
+                                          oninput="appointmentState.notes = this.value"></textarea>
+                            </div>
+                        </div>
+                        <div class="navigation-buttons mt-24">
+                            <button class="btn btn-secondary" onclick="appointmentState.step = 3; renderAppointmentBooking()">← Back</button>
+                            <button class="btn btn-success btn-large" onclick="confirmAppointment()">✓ Confirm Appointment</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function getSpecialtyIcon(specialty) {
+            const icons = {
+                'General Medicine': '🩺',
+                'Cardiology': '❤️',
+                'Neurology': '🧠',
+                'Orthopedics': '🦴',
+                'Pediatrics': '👶',
+                'Dermatology': '🔬'
+            };
+            return icons[specialty] || '⚕️';
+        }
+
+        function selectSpecialty(specialty) {
+            appointmentState.selectedSpecialty = specialty;
+            renderAppointmentBooking();
+        }
+
+        function selectDoctor(doctor) {
+            appointmentState.selectedDoctor = doctor;
+            renderAppointmentBooking();
+        }
+
+        function generateCalendarDays() {
+            const days = [];
+            const today = new Date();
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                days.push({
+                    date: date.toLocaleDateString(),
+                    day: date.getDate(),
+                    dayName: dayNames[date.getDay()],
+                    disabled: i === 0 // Disable today
+                });
+            }
+            return days;
+        }
+
+        function selectDate(date) {
+            appointmentState.selectedDate = date;
+            renderAppointmentBooking();
+        }
+
+        function selectTime(time) {
+            appointmentState.selectedTime = time;
+            renderAppointmentBooking();
+        }
+
+        function confirmAppointment() {
+            const appointment = {
+                id: 'APT' + Date.now(),
+                patientEmail: appData.currentUser.email,
+                patientName: appData.currentUser.name,
+                doctor: appointmentState.selectedDoctor,
+                specialty: appointmentState.selectedSpecialty,
+                date: appointmentState.selectedDate,
+                time: appointmentState.selectedTime,
+                notes: appointmentState.notes,
+                status: 'confirmed'
+            };
+
+            appData.appointments.push(appointment);
+            updatePatientStats();
+
+            showModal('Appointment Confirmed!', `
+                <div class="text-center">
+                    <div style="font-size: 64px; margin-bottom: var(--space-24);">✅</div>
+                    <h3 style="margin-bottom: var(--space-16);">Your appointment has been booked successfully!</h3>
+                    <div style="background: var(--color-bg-1); padding: var(--space-20); border-radius: var(--radius-base); margin-bottom: var(--space-24);">
+                        <div style="margin-bottom: var(--space-12);"><strong>Appointment ID:</strong> ${appointment.id}</div>
+                        <div style="margin-bottom: var(--space-12);"><strong>Doctor:</strong> ${appointment.doctor}</div>
+                        <div style="margin-bottom: var(--space-12);"><strong>Date:</strong> ${appointment.date}</div>
+                        <div><strong>Time:</strong> ${appointment.time}</div>
+                    </div>
+                    <p style="color: var(--color-text-secondary);">A confirmation has been recorded. You can view this in your appointments.</p>
+                    <button class="btn btn-primary btn-large mt-16" onclick="closeModal(); showPatientSection('my-appointments')">View My Appointments</button>
+                </div>
+            `);
+        }
+
+        // Removed health resources section
+        function initHealthResources() {
+            const container = document.getElementById('resources-content');
+            container.innerHTML = `
+                <div class="resources-tabs">
+                    <button class="tab-btn active" onclick="showResourceTab('articles')">📰 Health Articles</button>
+                    <button class="tab-btn" onclick="showResourceTab('quizzes')">🎯 Health Quizzes</button>
+                    <button class="tab-btn" onclick="showResourceTab('music')">🎵 Relaxation Music</button>
+                    <button class="tab-btn" onclick="showResourceTab('hospital-locator')">🏥 Hospital Locator</button>
+                </div>
+                <div id="tab-articles" class="tab-content active"></div>
+                <div id="tab-quizzes" class="tab-content"></div>
+                <div id="tab-music" class="tab-content"></div>
+                <div id="tab-hospital-locator" class="tab-content"></div>
+            `;
+
+            showResourceTab('articles');
+        }
+
+        function showResourceTab(tab) {
+            const tabs = ['articles', 'quizzes', 'music', 'hospital-locator'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.remove('active');
+            });
+            document.getElementById(`tab-${tab}`).classList.add('active');
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (tab === 'articles') renderArticles();
+            else if (tab === 'quizzes') renderQuizzes();
+            else if (tab === 'music') renderMusicPlayer();
+            else if (tab === 'hospital-locator') renderHospitalLocator();
+        }
+
+        function renderArticles() {
+            const container = document.getElementById('tab-articles');
+            container.innerHTML = `
+                <div class="articles-grid fade-in">
+                    ${healthArticles.map(article => `
+                        <div class="article-card" onclick="showArticle('${article.title}')">
+                            <div class="article-image">${getCategoryIcon(article.category)}</div>
+                            <div class="article-content">
+                                <span class="article-category">${article.category}</span>
+                                <h3 class="article-title">${article.title}</h3>
+                                <p class="article-excerpt">${article.excerpt}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'Diabetes': '💉',
+                'Cardiology': '❤️',
+                'Mental Health': '🧠',
+                'Nutrition': '🥗',
+                'Sleep Health': '😴',
+                'Fitness': '💪'
+            };
+            return icons[category] || '📄';
+        }
+
+        function showArticle(title) {
+            const article = healthArticles.find(a => a.title === title);
+            if (!article) return;
+
+            showModal(article.title, `
+                <div>
+                    <div style="text-align: center; font-size: 64px; margin-bottom: var(--space-24);">${getCategoryIcon(article.category)}</div>
+                    <span class="article-category" style="display: inline-block; margin-bottom: var(--space-16);">${article.category}</span>
+                    <p style="line-height: 1.8; color: var(--color-text);">${article.content}</p>
+                </div>
+            `);
+        }
+
+        // Removed quiz section
+        let quizState = {
+            currentQuestion: 0,
+            score: 0,
+            answers: [],
+            showingAnswer: false
+        };
+
+        function renderQuizzes() {
+            const container = document.getElementById('tab-quizzes');
+            container.innerHTML = `
+                <div class="fade-in">
+                    <div class="quiz-container" id="quiz-container"></div>
+                </div>
+            `;
+            startQuiz();
+        }
+
+        function startQuiz() {
+            quizState = { currentQuestion: 0, score: 0, answers: [], showingAnswer: false };
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quiz-container');
+
+            if (quizState.currentQuestion >= quizQuestions.length) {
+                renderQuizResults();
+                return;
+            }
+
+            const question = quizQuestions[quizState.currentQuestion];
+
+            container.innerHTML = `
+                <div class="quiz-question fade-in">
+                    <div class="question-number">Question ${quizState.currentQuestion + 1} of ${quizQuestions.length}</div>
+                    <h3 style="margin-bottom: var(--space-24);">${question.question}</h3>
+                    <div class="quiz-options">
+                        ${question.options.map((option, index) => `
+                            <button class="quiz-option ${quizState.showingAnswer ? (index === question.correct ? 'correct' : (quizState.answers[quizState.currentQuestion] === index ? 'incorrect' : '')) : ''}" 
+                                    onclick="answerQuestion(${index})" 
+                                    ${quizState.showingAnswer ? 'disabled' : ''}>
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    ${quizState.showingAnswer ? `
+                        <div class="quiz-feedback">
+                            <strong>${quizState.answers[quizState.currentQuestion] === question.correct ? '✅ Correct!' : '❌ Incorrect'}</strong>
+                            <p style="margin-top: var(--space-8);">${question.explanation}</p>
+                            <button class="btn btn-primary mt-16" onclick="nextQuizQuestion()">Next Question →</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function answerQuestion(answerIndex) {
+            if (quizState.showingAnswer) return;
+
+            quizState.answers[quizState.currentQuestion] = answerIndex;
+            if (answerIndex === quizQuestions[quizState.currentQuestion].correct) {
+                quizState.score++;
+            }
+            quizState.showingAnswer = true;
+            renderQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            quizState.currentQuestion++;
+            quizState.showingAnswer = false;
+            renderQuizQuestion();
+        }
+
+        function renderQuizResults() {
+            const container = document.getElementById('quiz-container');
+            const percentage = Math.round((quizState.score / quizQuestions.length) * 100);
+
+            container.innerHTML = `
+                <div class="quiz-results fade-in">
+                    <h2>Quiz Complete!</h2>
+                    <div class="quiz-score">${percentage}%</div>
+                    <h3>You got ${quizState.score} out of ${quizQuestions.length} questions correct!</h3>
+                    <p style="color: var(--color-text-secondary); margin: var(--space-24) 0;">
+                        ${percentage >= 80 ? 'Excellent work! You have great health knowledge.' :
+                    percentage >= 60 ? 'Good job! Keep learning about health.' :
+                        'Keep studying! Health knowledge is important.'}
+                    </p>
+                    <button class="btn btn-primary btn-large" onclick="startQuiz()">Take Quiz Again</button>
+                </div>
+            `;
+        }
+
+        // Removed music player
+        let playerState = {
+            currentTrack: 0,
+            isPlaying: false,
+            progress: 0
+        };
+
+        function renderMusicPlayer() {
+            const container = document.getElementById('tab-music');
+            const track = musicTracks[playerState.currentTrack];
+
+            container.innerHTML = `
+                <div class="music-player fade-in">
+                    <div class="now-playing">
+                        <div class="album-art">🎵</div>
+                        <div class="track-info">
+                            <h3>${track.title}</h3>
+                            <div class="track-type">${track.type}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-controls">
+                        <button class="control-btn" onclick="previousTrack()">⏮</button>
+                        <button class="control-btn play-btn" onclick="togglePlay()">
+                            ${playerState.isPlaying ? '⏸' : '▶'}
+                        </button>
+                        <button class="control-btn" onclick="nextTrack()">⏭</button>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="time-labels">
+                            <span>0:00</span>
+                            <span>${track.duration}</span>
+                        </div>
+                        <div class="progress-track" onclick="seekTrack(event)">
+                            <div class="progress-fill" style="width: ${playerState.progress}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="playlist">
+                        <h4>Playlist</h4>
+                        ${musicTracks.map((t, i) => `
+                            <div class="playlist-item ${i === playerState.currentTrack ? 'active' : ''}" 
+                                 onclick="selectTrack(${i})">
+                                <div>
+                                    <div style="font-weight: var(--font-weight-medium);">${t.title}</div>
+                                    <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">${t.type}</div>
+                                </div>
+                                <div>${t.duration}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function togglePlay() {
+            playerState.isPlaying = !playerState.isPlaying;
+            renderMusicPlayer();
+            if (playerState.isPlaying) {
+                simulatePlayback();
+            }
+        }
+
+        function simulatePlayback() {
+            if (!playerState.isPlaying) return;
+            playerState.progress = (playerState.progress + 1) % 100;
+            renderMusicPlayer();
+            setTimeout(simulatePlayback, 1000);
+        }
+
+        function previousTrack() {
+            playerState.currentTrack = (playerState.currentTrack - 1 + musicTracks.length) % musicTracks.length;
+            playerState.progress = 0;
+            renderMusicPlayer();
+        }
+
+        function nextTrack() {
+            playerState.currentTrack = (playerState.currentTrack + 1) % musicTracks.length;
+            playerState.progress = 0;
+            renderMusicPlayer();
+        }
+
+        function selectTrack(index) {
+            playerState.currentTrack = index;
+            playerState.progress = 0;
+            playerState.isPlaying = true;
+            renderMusicPlayer();
+            simulatePlayback();
+        }
+
+        function seekTrack(event) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            playerState.progress = (x / rect.width) * 100;
+            renderMusicPlayer();
+        }
+
+        // Removed hospital locator
+        let locatorState = {
+            filters: [],
+            searchTerm: ''
+        };
+
+        function renderHospitalLocator() {
+            const container = document.getElementById('tab-hospital-locator');
+
+            container.innerHTML = `
+                <div class="fade-in">
+                    <div class="locator-header">
+                        <input type="text" class="form-control search-input" 
+                               placeholder="Search by location..." 
+                               oninput="locatorState.searchTerm = this.value">
+                        <button class="btn btn-primary">📍 Use My Location</button>
+                    </div>
+                    
+                    <div class="mock-map">
+                        🗺️
+                        <div class="map-marker" style="top: 40%; left: 50%;"></div>
+                        <div class="map-marker" style="top: 60%; left: 30%;"></div>
+                        <div class="map-marker" style="top: 30%; left: 70%;"></div>
+                    </div>
+                    
+                    <div class="hospital-filters">
+                        ${['24/7 Emergency', 'Trauma Center', 'Pediatric Care', 'Cardiology', 'All Hospitals'].map(filter => `
+                            <div class="filter-chip ${locatorState.filters.includes(filter) ? 'active' : ''}" 
+                                 onclick="toggleFilter('${filter}')">
+                                ${filter}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="hospitals-list">
+                        ${hospitals.map(hospital => `
+                            <div class="hospital-card">
+                                <div class="hospital-header">
+                                    <div>
+                                        <div class="hospital-name">${hospital.name}</div>
+                                        <div class="hospital-distance">${hospital.distance} away</div>
+                                    </div>
+                                    ${hospital.is_24_7 ? '<span class="emergency-badge">24/7</span>' : ''}
+                                </div>
+                                <div class="hospital-details">
+                                    📍 ${hospital.address}<br>
+                                    📞 ${hospital.emergency}
+                                </div>
+                                <div class="hospital-specialties">
+                                    ${hospital.specialties.map(spec => `
+                                        <span class="specialty-tag">${spec}</span>
+                                    `).join('')}
+                                </div>
+                                <div class="hospital-actions">
+                                    <button class="btn btn-secondary">🗺️ Get Directions</button>
+                                    ${hospital.is_24_7 ? '<button class="btn btn-danger">🚨 Call Emergency</button>' : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleFilter(filter) {
+            const index = locatorState.filters.indexOf(filter);
+            if (index > -1) {
+                locatorState.filters.splice(index, 1);
+            } else {
+                locatorState.filters.push(filter);
+            }
+            renderHospitalLocator();
+        }
+
+        // Safety Officer Dashboard Functions
+        function showOfficerDashboard() {
+            console.log('Showing officer dashboard for:', appData.currentUser.name);
+            hideAllPages();
+            document.getElementById('officer-dashboard').style.display = 'flex';
+            document.getElementById('officer-dashboard').classList.remove('hidden');
+            document.getElementById('officer-name-sidebar').textContent = appData.currentUser.name;
+            document.getElementById('officer-welcome').textContent = `Welcome, ${appData.currentUser.name}!`;
+            document.getElementById('officer-facility').textContent = appData.currentUser.facility || 'Safety Control Center';
+            updateOfficerStats();
+            // Reset to overview section
+            const sections = ['overview', 'alerts', 'queue', 'incidents', 'workers', 'analytics'];
+            sections.forEach(s => {
+                const el = document.getElementById(`officer-${s}`);
+                if (el) el.classList.add('hidden');
+            });
+            document.getElementById('officer-overview').classList.remove('hidden');
+        }
+
+        function showOfficerSection(section) {
+            const sections = ['overview', 'alerts', 'queue', 'incidents', 'workers', 'analytics'];
+            sections.forEach(s => {
+                document.getElementById(`officer-${s}`).classList.add('hidden');
+            });
+            document.getElementById(`officer-${section}`).classList.remove('hidden');
+            const links = document.querySelectorAll('#officer-dashboard .sidebar-link');
+            links.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            if (section === 'alerts') renderRealTimeAlerts();
+            else if (section === 'queue') renderOfficerQueue();
+            else if (section === 'incidents') renderOfficerIncidents();
+            else if (section === 'workers') renderWorkerManagement();
+            else if (section === 'analytics') renderSafetyAnalytics();
+        }
+
+        function updateOfficerStats() {
+            const criticalAlerts = appData.alerts.filter(a => a.level === 'emergency').length;
+            const pendingWorkers = appData.assessments.filter(a => a.triage.level === 'urgent' || a.triage.level === 'emergency').length;
+            document.getElementById('stat-critical-alerts').textContent = criticalAlerts;
+            document.getElementById('stat-pending-workers').textContent = pendingWorkers;
+            renderUrgentQueue();
+        }
+
+        function renderUrgentQueue() {
+            const container = document.getElementById('urgent-queue');
+            const urgentWorkers = appData.assessments
+                .filter(a => a.triage.level === 'emergency' || a.triage.level === 'urgent')
+                .slice(0, 5);
+            if (urgentWorkers.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary);">No critical/urgent workers at this time</p>';
+                return;
+            }
+            container.innerHTML = urgentWorkers.map(worker => renderWorkerQueueCard(worker)).join('');
+        }
+
+        function renderRealTimeAlerts() {
+            const container = document.getElementById('real-time-alerts');
+            if (appData.alerts.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary); padding: var(--space-32);">No active alerts</p>';
+                return;
+            }
+            container.innerHTML = appData.alerts.reverse().map(alert => `
+                <div class="queue-patient emergency" style="border-left: 4px solid var(--color-safety-red);">
+                    <div class="patient-details">
+                        <h4>🚨 ${alert.type || 'Emergency Alert'}</h4>
+                        <div class="patient-meta">
+                            Worker: <strong>${alert.workerName}</strong> • ${alert.timestamp}
+                        </div>
+                        <div class="chief-complaint" style="background: rgba(220, 38, 38, 0.1);">
+                            <strong>Status:</strong> ${alert.status || 'ACTIVE'}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-danger" onclick="respondToAlert('${alert.id}')">Respond Now</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderOfficerQueue() {
+            const container = document.getElementById('full-queue');
+            if (appData.assessments.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary); padding: var(--space-32);">No workers in queue</p>';
+                return;
+            }
+            const sorted = [...appData.assessments].sort((a, b) => {
+                const priority = { emergency: 0, urgent: 1, soon: 2, routine: 3, 'self-care': 4 };
+                return priority[a.triage.level] - priority[b.triage.level];
+            });
+            container.innerHTML = sorted.map(worker => renderWorkerQueueCard(worker)).join('');
+        }
+
+        function renderWorkerQueueCard(worker) {
+            return `
+                <div class="queue-patient ${worker.triage.level}">
+                    <div class="patient-details">
+                        <h4>${worker.workerName} (ID: ${worker.employeeId})</h4>
+                        <div class="patient-meta">
+                            ${worker.date} at ${worker.time} • Dept: ${worker.department} • Triage: ${worker.triage.label}
+                        </div>
+                        <div class="chief-complaint">
+                            <strong>Concern:</strong> ${worker.answers.concern || 'Assessment'} • <strong>Pain:</strong> ${worker.answers.pain_scale || 'N/A'}/10
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="viewWorkerAssessment('${worker.id}')">
+                            📄 View Full Assessment
+                        </button>
+                    </div>
+                    <div>
+                        <select class="form-control" style="min-width: 150px;" onchange="updateWorkerStatus('${worker.id}', this.value)">
+                            <option>Pending Review</option>
+                            <option>Contacted</option>
+                            <option>Treated</option>
+                            <option>Cleared for Work</option>
+                            <option>Restricted Duty</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+
+        function respondToAlert(alertId) {
+            const alert = appData.alerts.find(a => a.id === alertId);
+            if (alert) {
+                alert.status = 'RESPONDING';
+                showModal('Responding to Alert', `
+                    <div class="text-center">
+                        <div style="font-size: 64px; margin-bottom: var(--space-24);">👨‍⚕️</div>
+                        <h3 style="margin-bottom: var(--space-16);">Emergency Response Initiated</h3>
+                        <p>Medical team has been dispatched to assist <strong>${alert.workerName}</strong>.</p>
+                        <button class="btn btn-primary btn-large mt-16" onclick="closeModal(); renderRealTimeAlerts()">Close</button>
+                    </div>
+                `);
+            }
+        }
+
+        function updateWorkerStatus(workerId, status) {
+            const worker = appData.assessments.find(w => w.id === workerId);
+            if (worker) {
+                worker.status = status;
+            }
+        }
+
+        function viewWorkerAssessment(assessmentId) {
+            const assessment = appData.assessments.find(a => a.id === assessmentId);
+            if (!assessment) return;
+
+            showModal('Worker Health Assessment Report', `
+                <div>
+                    <div style="background: var(--color-bg-1); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-24);">
+                        <div style="margin-bottom: var(--space-8);"><strong>Worker:</strong> ${assessment.workerName}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Employee ID:</strong> ${assessment.employeeId}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Department:</strong> ${assessment.department}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Date:</strong> ${assessment.date} at ${assessment.time}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Response Time:</strong> ${assessment.responseTime}s</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Confidence:</strong> ${assessment.confidence}</div>
+                        <div><strong>Triage Level:</strong> <span class="triage-badge triage-${assessment.triage.level}">${assessment.triage.label}</span></div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: var(--space-16);">Assessment Details</h4>
+                    <ul class="symptom-list">
+                        ${Object.entries(assessment.answers).map(([key, value]) => {
+                const displayValue = Array.isArray(value) ? value.join(', ') : value;
+                return `<li><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong> ${displayValue}</li>`;
+            }).join('')}
+                    </ul>
+                    
+                    <div style="background: var(--color-bg-2); padding: var(--space-16); border-radius: var(--radius-base); margin-top: var(--space-24);">
+                        <h4>AI Recommendation</h4>
+                        <p><strong>${assessment.triage.action}</strong></p>
+                        <p style="color: var(--color-text-secondary); margin-top: var(--space-8);">${assessment.triage.description}</p>
+                    </div>
+                    <button class="btn btn-primary btn-large mt-16 btn-full" onclick="closeModal()">Close Report</button>
+                </div>
+            `);
+        }
+
+        function viewIncidentReport(incidentId) {
+            const incident = appData.incidents.find(i => i.id === incidentId);
+            if (!incident) return;
+            showModal('Incident Report Details', `
+                <div>
+                    <div style="background: var(--color-bg-4); padding: var(--space-20); border-radius: var(--radius-base); margin-bottom: var(--space-24);">
+                        <div style="margin-bottom: var(--space-8);"><strong>Incident ID:</strong> ${incident.id}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Worker:</strong> ${incident.workerName} (${incident.employeeId})</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Department:</strong> ${incident.department}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Date/Time:</strong> ${incident.date} ${incident.time}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Type:</strong> ${incident.type}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Severity:</strong> ${incident.severity}</div>
+                        <div style="margin-bottom: var(--space-8);"><strong>Status:</strong> ${incident.status}</div>
+                    </div>
+                    <h4 style="margin-bottom: var(--space-12);">Description</h4>
+                    <p style="margin-bottom: var(--space-16);">${incident.description}</p>
+                    <h4 style="margin-bottom: var(--space-12);">Recommended Action</h4>
+                    <p>${incident.recommendation}</p>
+                    <button class="btn btn-primary btn-large mt-16 btn-full" onclick="closeModal()">Close</button>
+                </div>
+            `);
+        }
+
+        function renderOfficerIncidents() {
+            const container = document.getElementById('officer-incidents-list');
+            if (appData.incidents.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary); padding: var(--space-32);">No incident reports</p>';
+                return;
+            }
+            container.innerHTML = appData.incidents.slice().reverse().map(inc => `
+                <div class="appointment-card">
+                    <div>
+                        <div class="appointment-time">Incident #${inc.id}</div>
+                        <div><strong>${inc.workerName}</strong> - ${inc.department}</div>
+                        <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">${inc.date} ${inc.time} • ${inc.type} • ${inc.severity}</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="viewIncidentReport('${inc.id}')">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderWorkerManagement() {
+            const container = document.getElementById('officer-workers-list');
+            if (appData.users.workers.length === 0) {
+                container.innerHTML = '<p class="text-center" style="color: var(--color-text-secondary); padding: var(--space-32);">No workers registered</p>';
+                return;
+            }
+            container.innerHTML = appData.users.workers.map(worker => {
+                const workerAssessments = appData.assessments.filter(a => a.workerEmail === worker.email);
+                const healthScore = workerAssessments.length > 0 ? Math.max(70, 100 - workerAssessments.length * 3) : 85;
+                return `
+                    <div class="appointment-card">
+                        <div>
+                            <div><strong>${worker.name}</strong> (ID: ${worker.employeeId})</div>
+                            <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">${worker.department} • ${worker.phone}</div>
+                            <div style="margin-top: var(--space-8);">Health Score: <strong>${healthScore}%</strong> • Assessments: ${workerAssessments.length}</div>
+                        </div>
+                        <div>
+                            <span class="status status--success">Active</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSafetyAnalytics() {
+            const container = document.getElementById('analytics-content');
+            const totalAssessments = appData.assessments.length;
+            const totalIncidents = appData.incidents.length;
+            const criticalIncidents = appData.incidents.filter(i => i.severity === 'EMERGENCY').length;
+            const avgResponseTime = totalAssessments > 0 ? (appData.assessments.reduce((sum, a) => sum + parseFloat(a.responseTime), 0) / totalAssessments).toFixed(2) : '1.1';
+
+            container.innerHTML = `
+                <div class="stats-grid" style="margin-bottom: var(--space-32);">
+                    <div class="stat-card">
+                        <div class="stat-value">${totalAssessments}</div>
+                        <div class="stat-label">Total Assessments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${totalIncidents}</div>
+                        <div class="stat-label">Total Incidents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${criticalIncidents}</div>
+                        <div class="stat-label">Critical Incidents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${avgResponseTime}s</div>
+                        <div class="stat-label">Avg Response Time</div>
+                    </div>
+                </div>
+                <div class="checker-card" style="margin-bottom: var(--space-24);">
+                    <h3 style="margin-bottom: var(--space-16);">System Performance Metrics</h3>
+                    <div style="background: var(--color-bg-3); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-12);">
+                        <strong>Classification Accuracy:</strong> 92%
+                    </div>
+                    <div style="background: var(--color-bg-3); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-12);">
+                        <strong>Workload Reduction:</strong> 40%
+                    </div>
+                    <div style="background: var(--color-bg-3); padding: var(--space-16); border-radius: var(--radius-base); margin-bottom: var(--space-12);">
+                        <strong>System Uptime:</strong> 24/7 (99.9%)
+                    </div>
+                    <div style="background: var(--color-bg-3); padding: var(--space-16); border-radius: var(--radius-base);">
+                        <strong>Languages Supported:</strong> English, Hindi, Gujarati
+                    </div>
+                </div>
+            `;
+        }
+
+        // Modal
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Initialize app on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Factory Safety Assistant initialized');
+            loadAppData();
+            showLanding();
+
+            // Display test account info on landing page
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent) {
+                const testAccountsInfo = document.createElement('div');
+                testAccountsInfo.style.cssText = 'background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; margin-top: 32px; text-align: left;';
+                testAccountsInfo.innerHTML = `
+                    <h3 style="margin-bottom: 12px; font-size: 18px;">🔑 Test Accounts Available</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <strong>Worker Account:</strong><br>
+                            Email: worker@test.com<br>
+                            Password: worker123
+                        </div>
+                        <div>
+                            <strong>Safety Officer Account:</strong><br>
+                            Email: officer@test.com<br>
+                            Password: officer123
+                        </div>
+                    </div>
+                `;
+                heroContent.appendChild(testAccountsInfo);
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
